@@ -238,3 +238,36 @@ The output will list potential kernel exploits along with:
 | **Coverage** | Broad, including files, processes, and more | Narrow, focusing on kernel vulnerabilities |
 | **Updates** | Frequently updated with new checks | Database depends on version, sometimes outdated |
 | **Recommended For** | General Linux privilege escalation tasks | Quickly finding kernel-specific exploits |
+# Kernel Exploits
+
+# What is the Kernal ?
+
+The **kernel** is a [computer program](https://en.wikipedia.org/wiki/Computer_program) at the core of a [computer](https://en.wikipedia.org/wiki/Computer)'s [operating system](https://en.wikipedia.org/wiki/Operating_system) and generally has complete control over everything in the system. The kernel is also responsible for preventing and mitigating conflicts between different processes.[[1]](https://en.wikipedia.org/wiki/Kernel_(operating_system)#cite_note-Linfo-1) It is the portion of the operating system code that is always resident in [memory](https://en.wikipedia.org/wiki/Computer_memory)[[2]](https://en.wikipedia.org/wiki/Kernel_(operating_system)#cite_note-2) and facilitates interactions between hardware and software components.
+
+First we look for version in kernal by this command `uname -a`  
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/f789f234-2d96-4484-8943-0c054f831699/74b25925-47a0-48ce-a057-276130d34a15/image.png)
+
+we will search about this kernal to find exploit :
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/f789f234-2d96-4484-8943-0c054f831699/8e13f994-afc4-4523-944c-6b049feacb65/image.png)
+
+we found exploit for our version 
+
+[Linux Kernel 2.6.22 < 3.9 - 'Dirty COW' 'PTRACE_POKEDATA' Race Condition Privilege Escalation (/etc/passwd Method)](https://www.exploit-db.com/exploits/40839)
+
+we download and make exploit ready for run 
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/f789f234-2d96-4484-8943-0c054f831699/58cb8d47-6795-4aa6-8660-d5d18917492d/image.png)
+
+we see this file we should write this command to make it ready to run  `gcc -pthread c0w.c -o c0w`
+
+now it we make new file can run to  make exploit  
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/f789f234-2d96-4484-8943-0c054f831699/a4ced3fe-5cf2-4258-88a8-05da748d095e/image.png)
+
+we now do this command  `./c0w` 
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/f789f234-2d96-4484-8943-0c054f831699/81b1cb05-5726-4fc0-97db-269904c522a1/image.png)
+
+we have hint in THM if we write `passwd`  after exploit we become root
