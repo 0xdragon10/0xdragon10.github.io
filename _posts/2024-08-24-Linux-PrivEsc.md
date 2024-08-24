@@ -7,7 +7,7 @@ excerpt: "A detailed write-up on Linux privilege escalation techniques covered i
 ---
 # Linux Privilege Escalation
 ![image.png](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWOckg_ZAWFp4fiDeOwmZnqDQ-JslUjqfXuw&s)
-**Introduction to the TCM Privilege Escalation Course for Linux**
+# **Introduction to the TCM Privilege Escalation Course for Linux**
 
 The TCM Privilege Escalation Course for Linux is designed to equip cybersecurity enthusiasts with the skills and knowledge needed to elevate their access on Linux systems. Throughout this course, you will delve into various privilege escalation techniques, from exploiting misconfigurations to leveraging kernel vulnerabilities.
 
@@ -285,19 +285,19 @@ We look for any password in system and try to login as root
 
 we search in all files we write this command  `ls -las` 
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/f789f234-2d96-4484-8943-0c054f831699/69a74f86-6b22-4522-a026-f060b4058001/image.png)
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-13 010403.png)
 
 we look at `.irssi` we found this 
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/f789f234-2d96-4484-8943-0c054f831699/e833d89d-96a8-49bc-aed5-7fff824cfbff/image.png)
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-13 011011.png)
 
 and we have another thing to myvpn.ovpn
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/f789f234-2d96-4484-8943-0c054f831699/c37fab66-c34b-488d-8567-6ba82cd289b2/image.png)
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-13 012341.png)
 
-we write command `history`
+and another way we write command `history`
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/f789f234-2d96-4484-8943-0c054f831699/7deb5041-5288-4847-ba6a-8b79beeb8c0c/image.png)
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-13 012549.png)
 
 we found mysql user & pass 
 
@@ -305,15 +305,15 @@ we found mysql user & pass
 
 We look at `/etc/passwd`  and `/etc/shadow` 
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/f789f234-2d96-4484-8943-0c054f831699/e5fc292c-6217-4aaf-bae3-b6ab7f65780d/image.png)
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-13 014151.png)
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/f789f234-2d96-4484-8943-0c054f831699/3dc28007-f414-4216-a1d6-f84e3e34bd7b/image.png)
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-13 014230.png)
 
 we put the all result individual and writ this command `unshadow passwd shadow`  and take the result to another file and crack it by john write this command 
 
 `john —wordlist=/usr/share/wordlist/rockyou.txt  result.txt`
 
-![Screenshot 2024-08-13 015005.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/f789f234-2d96-4484-8943-0c054f831699/46bf0736-0f55-495f-97a9-3ad90ee7b2fb/Screenshot_2024-08-13_015005.png)
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-13 015005.png)
 
 # Escalation via SSH Keys :-
 
@@ -323,8 +323,8 @@ We search about some files we use this commands :
 
 **`find / -name id_rsa 2> /dev/null`**
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/f789f234-2d96-4484-8943-0c054f831699/6d4fd00c-12eb-48cf-8f3b-4f73223ca032/image.png)
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-13 021238.png)
 
 1. In command prompt type: `chmod 400 id_rsa`
 
-2. In command prompt type: **s`sh -i id_rsa root@<ip>`**
+2. In command prompt type: **`ssh -i id_rsa root@<ip>`**
