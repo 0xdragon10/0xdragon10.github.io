@@ -253,7 +253,7 @@ First we look for version in kernal by this command `uname -a`
 
 we will search about this kernal to find exploit :
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/f789f234-2d96-4484-8943-0c054f831699/8e13f994-afc4-4523-944c-6b049feacb65/image.png)
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-12 191221.png)
 
 we found exploit for our version 
 
@@ -261,16 +261,16 @@ we found exploit for our version
 
 we download and make exploit ready for run 
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/f789f234-2d96-4484-8943-0c054f831699/58cb8d47-6795-4aa6-8660-d5d18917492d/image.png)
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-12 191440.png)
 
 we see this file we should write this command to make it ready to run  `gcc -pthread c0w.c -o c0w`
 
 now it we make new file can run to  make exploit  
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/f789f234-2d96-4484-8943-0c054f831699/a4ced3fe-5cf2-4258-88a8-05da748d095e/image.png)
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-12 191743.png)
 
 we now do this command  `./c0w` 
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/f789f234-2d96-4484-8943-0c054f831699/81b1cb05-5726-4fc0-97db-269904c522a1/image.png)
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-12 192019.png)
 
 we have hint in THM if we write `passwd`  after exploit we become root
