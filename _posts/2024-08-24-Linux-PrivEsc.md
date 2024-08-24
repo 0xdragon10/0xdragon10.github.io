@@ -249,7 +249,7 @@ The **kernel** is a [computer program](https://en.wikipedia.org/wiki/Computer
 
 First we look for version in kernal by this command `uname -a`  
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/f789f234-2d96-4484-8943-0c054f831699/74b25925-47a0-48ce-a057-276130d34a15/image.png)
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-12 191101.png)
 
 we will search about this kernal to find exploit :
 
