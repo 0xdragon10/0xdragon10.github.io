@@ -6,7 +6,7 @@ tags: [Privilege Escalation, Linux]
 excerpt: "A detailed write-up on Linux privilege escalation techniques covered in the Privilege Escalation in Linux."
 ---
 # Linux Privilege Escalation
-![image.png](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWOckg_ZAWFp4fiDeOwmZnqDQ-JslUjqfXuw&s)
+![image.png](https://c4.wallpaperflare.com/wallpaper/957/278/566/guardians-of-the-galaxy-vol-2-linux-groot-root-wallpaper-preview.jpg)
 # **Introduction to the Privilege Escalation Course for Linux**
 
 The Privilege Escalation for Linux is designed to equip cybersecurity enthusiasts with the skills and knowledge needed to elevate their access on Linux systems. Throughout this course, you will delve into various privilege escalation techniques, from exploiting misconfigurations to leveraging kernel vulnerabilities.
