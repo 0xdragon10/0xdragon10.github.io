@@ -238,7 +238,10 @@ The output will list potential kernel exploits along with:
 | **Coverage** | Broad, including files, processes, and more | Narrow, focusing on kernel vulnerabilities |
 | **Updates** | Frequently updated with new checks | Database depends on version, sometimes outdated |
 | **Recommended For** | General Linux privilege escalation tasks | Quickly finding kernel-specific exploits |
+
+
 # Kernel Exploits
+
 
 # What is the Kernal ?
 
