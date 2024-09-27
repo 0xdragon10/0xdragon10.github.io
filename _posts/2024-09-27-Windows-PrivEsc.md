@@ -1,5 +1,5 @@
 # Windows PrivEsc
-
+![image.png](https://hacklido.com/assets/files/2023-03-05/1678043519-805217-0-windows-headpic.jpg)
 **Introduction to the Privilege Escalation Course for Windows**
 
 The Privilege Escalation Course for Windows is designed to equip cybersecurity enthusiasts with the skills and knowledge needed to elevate their access on Windows systems. Throughout this course, you will explore various privilege escalation techniques, from exploiting misconfigurations to abusing Windows services and kernel vulnerabilities.
