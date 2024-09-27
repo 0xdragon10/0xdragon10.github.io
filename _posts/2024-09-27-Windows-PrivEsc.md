@@ -1,3 +1,10 @@
+---
+title: "Windows Privilege Escalation"
+date: 2024-09-27 10:00:00 +0800
+categories: [Windows, Security]
+tags: [Privilege Escalation, Windows]
+excerpt: "A detailed write-up on Windows privilege escalation techniques covered in the Privilege Escalation in Windows."
+---
 # Windows PrivEsc
 ![image.png](https://hacklido.com/assets/files/2023-03-05/1678043519-805217-0-windows-headpic.jpg)
 **Introduction to the Privilege Escalation Course for Windows**
