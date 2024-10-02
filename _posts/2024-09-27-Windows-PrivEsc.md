@@ -143,7 +143,7 @@ Network enumeration involves gathering information about the network configurati
 
 Here are some useful commands for network enumeration in Windows:
 
-### 1. **View detailed network configuration:**
+###  **View detailed network configuration:**
 
 The `ipconfig /all` command displays detailed information about the system's network interfaces, including IP addresses, subnet masks, default gateways, DNS servers, and MAC addresses. This is crucial to understand the network setup and identify misconfigurations.
 
@@ -151,7 +151,7 @@ The `ipconfig /all` command displays detailed information about the system's net
 ipconfig /all
 ```
 
-### 2. **List the ARP table:**
+### **List the ARP table:**
 
 The ARP (Address Resolution Protocol) table maps IP addresses to MAC addresses of devices on the local network. Using the `arp -a` command, you can identify active devices on the network and gather information that can assist in lateral movement or network-based attacks.
 
@@ -159,7 +159,7 @@ The ARP (Address Resolution Protocol) table maps IP addresses to MAC addresses o
 arp -a
 ```
 
-### 3. **Display the routing table:**
+###  **Display the routing table:**
 
 The `route print` command displays the system's routing table, showing the paths used for sending traffic between different network segments. This can help identify potential gateways or compromised routes that can be exploited for privilege escalation.
 
@@ -167,7 +167,7 @@ The `route print` command displays the system's routing table, showing the paths
 route print
 ```
 
-### 4. **View active connections and listening ports:**
+###  **View active connections and listening ports:**
 
 The `netstat -ano` command shows all active network connections, along with the associated process ID (PID) and protocol (TCP/UDP). This helps in identifying potentially vulnerable or suspicious connections.
 
@@ -179,7 +179,7 @@ netstat -ano
 
 Password enumeration or "password hunting" involves searching the system for files and configurations that might store sensitive information, including passwords or credentials. Here are some useful commands for hunting down passwords in Windows systems:
 
-### 1. **Search for password patterns in common file types:**
+###  **Search for password patterns in common file types:**
 
 The `findstr /si password *.txt *.ini *.config` command searches for the term "password" in all `.txt`, `.ini`, and `.config` files in the current directory. This can help locate files where passwords may be stored in plaintext.
 
@@ -187,7 +187,7 @@ The `findstr /si password *.txt *.ini *.config` command searches for the term "p
 findstr /si password *.txt *.ini *.config
 ```
 
-### 2. **Search all files for password patterns:**
+###  **Search all files for password patterns:**
 
 To search across all files in a directory, you can use `findstr /spin "password" *.*`. This command recursively searches for any instance of the word "password" in all files and directories, revealing potential password storage locations.
 
@@ -195,7 +195,7 @@ To search across all files in a directory, you can use `findstr /spin "password"
 findstr /spin "password" *.*
 ```
 
-### 3. **Check specific XML files for saved passwords:**
+###  **Check specific XML files for saved passwords:**
 
 The `Unattend.xml` file is often used in Windows installations and may contain sensitive information like saved passwords. Checking this file for passwords can provide access to system credentials:
 
@@ -204,7 +204,7 @@ The `Unattend.xml` file is often used in Windows installations and may contain s
 %WINDIR%\Panther\Unattended.xml
 ```
 
-### 4. **Search for VNC configuration files:**
+###  **Search for VNC configuration files:**
 
 VNC (Virtual Network Computing) configuration files, such as `vnc.ini`, can sometimes store passwords. Using the following command, you can search the entire `C:\` drive for VNC-related `.ini` files that may contain sensitive information:
 
@@ -222,7 +222,7 @@ By using these commands, you can efficiently hunt for passwords and credentials 
 
 Antivirus (AV) enumeration is crucial for understanding the security measures in place on a target system. Identifying the antivirus software running on a machine can help you determine potential bypass or evasion techniques. In Windows, various commands can be used to query the status of antivirus services.
 
-### 1. **Query Windows Defender:**
+###  **Query Windows Defender:**
 
 The `sc query windefend` command checks the status of the Windows Defender service. If Windows Defender is running, it may block or alert on certain activities, so understanding its status is important for further exploitation.
 
@@ -230,7 +230,7 @@ The `sc query windefend` command checks the status of the Windows Defender servi
 sc query windefend
 ```
 
-### 2. **Query all running services:**
+###  **Query all running services:**
 
 The `sc queryex type= service` command lists all services currently running on the system, including antivirus services. By examining this list, you can identify any third-party antivirus software that may be installed and active on the machine.
 
