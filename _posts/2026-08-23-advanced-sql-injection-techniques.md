@@ -7,4 +7,4 @@ tags: [Web Security, CTF]
 
 [[ PASTE THE FULL ARTICLE TEXT HERE — replace everything below this line ]]
 
-Deep dive into bypassing WAFs and exploiting blind SQLi in real-world scenarios.
+hello
