@@ -1,61 +1,39 @@
-# Chirpy Starter
+# 0xdragon — official blog
 
-[![Gem Version](https://img.shields.io/gem/v/jekyll-theme-chirpy)][gem]&nbsp;
-[![GitHub license](https://img.shields.io/github/license/cotes2020/chirpy-starter.svg?color=blue)][mit]
+Static Jekyll site, built with a custom theme (no third-party theme gem —
+GitHub Pages builds it natively, no GitHub Actions needed).
 
-When installing the [**Chirpy**][chirpy] theme through [RubyGems.org][gem], Jekyll can only read files in the folders
-`_data`, `_layouts`, `_includes`, `_sass` and `assets`, as well as a small part of options of the `_config.yml` file
-from the theme's gem. If you have ever installed this theme gem, you can use the command
-`bundle info --path jekyll-theme-chirpy` to locate these files.
+## Structure
 
-The Jekyll team claims that this is to leave the ball in the user’s court, but this also results in users not being
-able to enjoy the out-of-the-box experience when using feature-rich themes.
-
-To fully use all the features of **Chirpy**, you need to copy the other critical files from the theme's gem to your
-Jekyll site. The following is a list of targets:
-
-```shell
-.
-├── _config.yml
-├── _plugins
-├── _tabs
-└── index.html
+```
+_config.yml           site settings
+_layouts/default.html page shell: head, nav, cursor, particles, footer, shared JS
+_layouts/post.html     article reading page (used automatically by every post)
+_posts/                one markdown file per blog post
+assets/css/main.css    all site styles
+assets/js/site.js      shared JS (particles, cursor, nav, scroll animations)
+assets/dragon-core.png hero/background artwork
+index.html             homepage (hero, about, skills, certs, projects, writeups list, contact)
 ```
 
-To save you time, and also in case you lose some files while copying, we extract those files/configurations of the
-latest version of the **Chirpy** theme and the [CD][CD] workflow to here, so that you can start writing in minutes.
+## Adding a new post
 
-## Prerequisites
+1. Create a file in `_posts/` named `YYYY-MM-DD-your-title.md`
+   (the date in the filename controls the URL and sort order).
+2. Add front matter at the top, then write the article in Markdown below it:
 
-Follow the instructions in the [Jekyll Docs](https://jekyllrb.com/docs/installation/) to complete the installation of
-the basic environment. [Git](https://git-scm.com/) also needs to be installed.
+   ```markdown
+   ---
+   layout: post
+   title: "Your Post Title"
+   date: 2026-08-23 12:00:00 +0200
+   tags: [Web Security, CTF]
+   ---
 
-## Installation
+   Your article content goes here, in normal Markdown.
+   ```
+3. Commit and push. GitHub Pages rebuilds automatically (~1 minute) and the
+   post appears in the "Writeups" section on the homepage, with its own page
+   at `/posts/your-title/`.
 
-Sign in to GitHub and [**use this template**][use-template] to generate a brand new repository and name it
-`USERNAME.github.io`, where `USERNAME` represents your GitHub username.
-
-Then clone it to your local machine and run:
-
-```console
-$ bundle
-```
-
-## Usage
-
-Please see the [theme's docs](https://github.com/cotes2020/jekyll-theme-chirpy#documentation).
-
-## Contributing
-
-The contents of this repository are automatically updated when new releases are made to the [main repository][chirpy].  
-If you have problems using it, or would like to participate in improving it, please go to the main repository for feedback!
-
-## License
-
-This work is published under [MIT][mit] License.
-
-[gem]: https://rubygems.org/gems/jekyll-theme-chirpy
-[chirpy]: https://github.com/cotes2020/jekyll-theme-chirpy/
-[use-template]: https://github.com/cotes2020/chirpy-starter/generate
-[CD]: https://en.wikipedia.org/wiki/Continuous_deployment
-[mit]: https://github.com/cotes2020/chirpy-starter/blob/master/LICENSE
+No other file needs to change to publish a new post.

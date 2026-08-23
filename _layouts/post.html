@@ -1,0 +1,18 @@
+---
+layout: default
+---
+<section class="hero" style="min-height:auto; padding:8.5rem 2rem 4rem;">
+    <div class="post-article">
+        <a href="{{ '/' | relative_url }}#blog" class="post-back"><i class="fas fa-arrow-left"></i> Back to writeups</a>
+        <div class="post-header">
+            <div class="blog-meta">
+                {% for tag in page.tags %}<span class="blog-tag">{{ tag }}</span>{% endfor %}
+                <span class="blog-date">{{ page.date | date: "%b %d, %Y" }}</span>
+            </div>
+            <h1 class="post-title">{{ page.title }}</h1>
+        </div>
+        <div class="post-body">
+            {{ content }}
+        </div>
+    </div>
+</section>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>{% if page.url == "/" or page.url == "/index.html" %}0xdragon — {{ page.title }}{% elsif page.title %}{{ page.title }} — 0xdragon{% else %}{{ site.title }}{% endif %}</title>
+    <meta name="description" content="{{ page.description | default: page.excerpt | default: site.description | strip_html | strip_newlines | truncate: 160 }}" />
+    <meta property="og:title" content="{% if page.url == "/" or page.url == "/index.html" %}0xdragon — {{ page.title }}{% elsif page.title %}{{ page.title }} — 0xdragon{% else %}{{ site.title }}{% endif %}" />
+    <meta property="og:description" content="{{ page.description | default: page.excerpt | default: site.description | strip_html | strip_newlines | truncate: 160 }}" />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+</head>
+
+<body>
+    <!-- CURSOR -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-claw" id="cursor-claw" aria-hidden="true">
+        <svg viewBox="0 0 40 40" width="38" height="38">
+            <path class="cursor-dragon-body" d="M38,20 L25,11 L19,7 L9,1 L15,15 L2,20 L15,25 L9,39 L19,33 L25,29 Z"/>
+            <circle class="cursor-dragon-eye" cx="27" cy="18" r="1.6"/>
+        </svg>
+    </div>
+    <script>document.documentElement.classList.add('js-animations');</script>
+
+    <!-- DRAGON PRESENCE — the real artwork, watching, not dancing -->
+    <div class="dragon-backdrop" aria-hidden="true">
+        <img src="{{ '/assets/dragon-core.png' | relative_url }}" alt="" />
+    </div>
+
+    <!-- PARTICLES -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- NAVIGATION -->
+    <nav id="navbar">
+        <a href="{{ '/' | relative_url }}" class="nav-logo">
+            <span class="prompt">$</span> 0xdragon<span class="terminal-cursor"></span>
+        </a>
+        <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="{{ '/' | relative_url }}#about">0xdragon</a></li>
+            <li><a href="{{ '/' | relative_url }}#skills">skills</a></li>
+            <li><a href="{{ '/' | relative_url }}#certifications">certs</a></li>
+            <li><a href="{{ '/' | relative_url }}#projects">projects</a></li>
+            <li><a href="{{ '/' | relative_url }}#blog">writeups</a></li>
+            <li><a href="{{ '/' | relative_url }}#contact">contact</a></li>
+        </ul>
+    </nav>
+
+    {{ content }}
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content"><span class="footer-hex">0x00</span> 0xdragon <span class="footer-hex">//</span> Offensive Security &amp; Research <span class="footer-hex">//</span> &copy; {{ 'now' | date: "%Y" }}</div>
+    </footer>
+
+    <script src="{{ '/assets/js/site.js' | relative_url }}"></script>
+</body>
+</html>

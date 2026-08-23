@@ -1,4 +1,285 @@
 ---
-layout: home
-# Index page
+layout: default
+title: "Offensive Security & Reverse Engineering"
+description: "Offensive security researcher focused on binary exploitation, reverse engineering, and red team operations. CTF player, bug hunter, and exploit developer."
 ---
+
+    <!-- HERO -->
+    <section class="hero" id="home">
+        <div class="hero-layout">
+            <div class="hero-visual">
+                <div class="hero-image-frame">
+                    <span class="dragon-claw-mark claw-a"></span>
+                    <span class="dragon-claw-mark claw-b"></span>
+                    <img class="hero-image" src="{{ '/assets/dragon-core.png' | relative_url }}" alt="0xdragon dragon artwork" />
+                    <span class="image-scanline"></span>
+                    <span class="dragon-seal">0XDRAGON</span>
+                </div>
+            </div>
+            <div class="hero-copy">
+                <p class="hero-roleline">OFFENSIVE SECURITY ENGINEER</p>
+                <h1 class="hero-name"><span class="highlight">MOHAMED</span> <span class="surname">HAYTHAM</span></h1>
+                <p class="hero-alias"><span class="at">@</span>0xdragon</p>
+                <p class="hero-tagline"><strong>Breaking systems to understand them. Understanding systems to secure them.</strong><br>Focused on binary exploitation, reverse engineering, web and network attack paths, and red team operations.</p>
+                <div class="hero-tags">
+                    <span class="hero-tag">Binary Exploitation</span>
+                    <span class="hero-tag">Reverse Engineering</span>
+                    <span class="hero-tag">Red Team Operations</span>
+                    <span class="hero-tag">Web Security</span>
+                    <span class="hero-tag">Android Security</span>
+                    <span class="hero-tag">Active Directory</span>
+                </div>
+                <div class="hero-socials">
+                    <a href="https://github.com/0xdragon10" target="_blank" rel="noopener" class="social-link" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="https://x.com/0xdragon1x" target="_blank" rel="noopener" class="social-link" title="X"><i class="fab fa-x-twitter"></i></a>
+                    <a href="https://www.linkedin.com/in/0xdragon/" target="_blank" rel="noopener" class="social-link" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="mailto:mohamedhaythamm106@gmail.com" class="social-link" title="Email"><i class="fas fa-envelope"></i></a>
+                    <a href="#blog" class="social-link" title="Writeups"><i class="fas fa-blog"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="hex-line">// ATTACK SURFACE // RESEARCH // EXPLOITATION // DEFENSE //</div>
+
+    <!-- ABOUT -->
+    <section id="about">
+        <div class="section-container">
+            <div class="section-header animate-on-scroll">
+                <p class="section-label">0x01 // 0XDRAGON</p>
+                <h2 class="section-title">Offensive Security, Research &amp; Engineering</h2>
+                <div class="section-divider"></div>
+            </div>
+            <div class="about-grid">
+                <div class="about-text animate-on-scroll">
+                    <p><strong style="color:var(--text-primary)">Mohamed Haytham</strong> — known online as <strong style="color:var(--accent-green)">0xdragon</strong> — works at the intersection of offensive security engineering and security research. The focus is not just finding a bug; it is understanding the underlying system, building an attack path, validating impact, and turning the result into something defensible.</p>
+                    <p>The technical direction spans <strong style="color:var(--accent-green)">binary exploitation</strong>, <strong style="color:var(--accent-green)">reverse engineering</strong>, web and network security, Active Directory attack paths, reconnaissance, and red team operations.</p>
+                    <p>Security research with the <strong style="color:var(--accent-cyan)">Synack Red Team</strong> is part of that trajectory, with an emphasis on continuous target research, attack-surface analysis, and finding the paths that are easy to miss when testing becomes purely tool-driven.</p>
+                    <div class="research-callout"><strong>RESEARCH PRINCIPLE</strong><br>Map the surface → understand the system → identify the primitive → validate the chain → document the impact.</div>
+                    <div class="experience-strip">
+                        <div class="experience-item"><div class="eyebrow">Research</div><h3>Synack Red Team</h3><p>Security research, target analysis, and continuous attack-surface exploration.</p></div>
+                        <div class="experience-item"><div class="eyebrow">Method</div><h3>Offensive Engineering</h3><p>Exploit development mindset, reverse engineering, and attack-path construction.</p></div>
+                        <div class="experience-item"><div class="eyebrow">Output</div><h3>Research &amp; Writeups</h3><p>Turning technical discoveries into reproducible analysis and actionable findings.</p></div>
+                    </div>
+                </div>
+                <div class="about-terminal animate-on-scroll">
+                    <div class="terminal-header">
+                        <span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span>
+                        <span class="terminal-title"><span class="terminal-live-badge"><span class="dot"></span>LIVE</span>zsh — 0xdragon@exploit</span>
+                    </div>
+                    <div class="terminal-body terminal-live" id="research-terminal"><div class="terminal-line"><span class="terminal-prompt">0xdragon@exploit:~$</span> <span class="typing-cursor"></span></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills">
+        <div class="section-container">
+            <div class="section-header animate-on-scroll">
+                <p class="section-label">0x02 // EXPERTISE</p>
+                <h2 class="section-title">Attack Surface Coverage</h2>
+                <div class="section-divider"></div>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-card animate-on-scroll"><div class="skill-icon"><i class="fas fa-globe"></i></div><h3 class="skill-name">Web Application Security</h3><p class="skill-desc">Deep analysis of web applications including authentication flaws, injection vulnerabilities, and misconfigurations, using OWASP and PTES methodology.</p><div class="skill-tags"><span>OWASP Top 10</span><span>Burp Suite</span><span>SQLi</span><span>XSS</span><span>CSRF</span></div></div>
+                <div class="skill-card animate-on-scroll"><div class="skill-icon"><i class="fas fa-skull-crossbones"></i></div><h3 class="skill-name">Exploitation &amp; Post-Exploitation</h3><p class="skill-desc">Privilege escalation on Windows and Linux, kernel exploits, and reverse shells to move from initial foothold to full compromise.</p><div class="skill-tags"><span>Privilege Escalation</span><span>Kernel Exploits</span><span>Reverse Shells</span></div></div>
+                <div class="skill-card animate-on-scroll"><div class="skill-icon"><i class="fas fa-sitemap"></i></div><h3 class="skill-name">Active Directory Exploitation &amp; Defense</h3><p class="skill-desc">Domain enumeration and attack paths like Kerberoasting and misconfiguration abuse, alongside the defenses to mitigate them.</p><div class="skill-tags"><span>Kerberoasting</span><span>ASREPRoasting</span><span>Mimikatz</span><span>Rubeus</span><span>Impacket</span></div></div>
+                <div class="skill-card animate-on-scroll"><div class="skill-icon"><i class="fas fa-satellite-dish"></i></div><h3 class="skill-name">OSINT &amp; Reconnaissance</h3><p class="skill-desc">Mapping attack surface and gathering intelligence before an engagement even starts.</p><div class="skill-tags"><span>Maltego</span><span>theHarvester</span><span>Shodan</span><span>Google Dorking</span></div></div>
+                <div class="skill-card animate-on-scroll"><div class="skill-icon"><i class="fas fa-flag"></i></div><h3 class="skill-name">CTF &amp; Bug Bounty</h3><p class="skill-desc">Active CTF author across web and network categories, and a bug bounty hunter reporting valid findings on HackerOne and Bugcrowd.</p><div class="skill-tags"><span>HackerOne</span><span>Bugcrowd</span><span>CTF Authoring</span></div></div>
+                <div class="skill-card animate-on-scroll"><div class="skill-icon"><i class="fas fa-terminal"></i></div><h3 class="skill-name">Programming &amp; Scripting</h3><p class="skill-desc">Building automation scripts and tooling to speed up recon, exploitation, and reporting.</p><div class="skill-tags"><span>Python</span><span>Bash</span><span>PowerShell</span><span>Automation</span></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CERTIFICATIONS (COMPACT) -->
+    <section id="certifications">
+        <div class="section-container">
+            <div class="section-header animate-on-scroll">
+                <p class="section-label">0x03 // CERTIFICATIONS</p>
+                <h2 class="section-title">Professional Credentials</h2>
+                <div class="section-divider"></div>
+            </div>
+            <div class="certs-grid">
+                <div class="cert-card animate-on-scroll">
+                    <div class="cert-top">
+                        <div class="cert-badge">CPTS</div>
+                        <div class="cert-status achieved"><i class="fas fa-check-circle"></i> Achieved</div>
+                    </div>
+                    <div class="cert-name">Professional Security Credential</div>
+                    <div class="cert-credential">
+                        <span>CERTIFICATE ID</span>
+                        <code id="cpts-id">HTBCERT-0D53BE15CE</code>
+                        <button class="cert-copy" id="copy-cpts" type="button" title="Copy certificate ID"><i class="fas fa-copy"></i> COPY ID</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="hex-line">// ENUMERATE // ANALYZE // EXPLOIT // VALIDATE //</div>
+
+    <!-- PROJECTS -->
+    <section id="projects">
+        <div class="section-container">
+            <div class="section-header animate-on-scroll">
+                <p class="section-label">0x04 // PROJECTS</p>
+                <h2 class="section-title">Tools &amp; Research</h2>
+                <div class="section-divider"></div>
+            </div>
+            <div class="projects-grid">
+                <a href="https://github.com/0xdragon10" target="_blank" rel="noopener" class="project-card animate-on-scroll"><div class="project-header"><span class="project-icon"><i class="fas fa-dragon"></i></span><span class="project-link-icon"><i class="fas fa-arrow-up-right-from-square"></i></span></div><h3 class="project-name">DragonRecon</h3><p class="project-desc">Automated reconnaissance framework for bug bounty and offensive security engagements with subdomain enumeration and asset discovery.</p><div class="project-tech"><span>Python</span><span>Automation</span><span>Recon</span></div><div class="project-status coming-soon"><i class="fas fa-clock"></i> Coming Soon</div></a>
+                <a href="https://github.com/0xdragon10" target="_blank" rel="noopener" class="project-card animate-on-scroll"><div class="project-header"><span class="project-icon"><i class="fas fa-fire"></i></span><span class="project-link-icon"><i class="fas fa-arrow-up-right-from-square"></i></span></div><h3 class="project-name">FireBreath</h3><p class="project-desc">Custom Burp Suite extension for advanced XSS detection with context-aware payload generation and blind XSS callback server.</p><div class="project-tech"><span>Java</span><span>Burp API</span><span>XSS</span></div><div class="project-status coming-soon"><i class="fas fa-clock"></i> Coming Soon</div></a>
+                <a href="https://github.com/0xdragon10" target="_blank" rel="noopener" class="project-card animate-on-scroll"><div class="project-header"><span class="project-icon"><i class="fas fa-shield-halved"></i></span><span class="project-link-icon"><i class="fas fa-arrow-up-right-from-square"></i></span></div><h3 class="project-name">ScaleGuard</h3><p class="project-desc">Mobile application security scanner supporting both Android and iOS with automated vulnerability detection and reporting.</p><div class="project-tech"><span>Python</span><span>Frida</span><span>Mobile</span></div><div class="project-status coming-soon"><i class="fas fa-clock"></i> Coming Soon</div></a>
+                <a href="https://github.com/0xdragon10" target="_blank" rel="noopener" class="project-card animate-on-scroll"><div class="project-header"><span class="project-icon"><i class="fas fa-scroll"></i></span><span class="project-link-icon"><i class="fas fa-arrow-up-right-from-square"></i></span></div><h3 class="project-name">CTF Writeups</h3><p class="project-desc">Collection of CTF challenge solutions and writeups covering web exploitation, cryptography, forensics, and reverse engineering.</p><div class="project-tech"><span>Writeups</span><span>Web</span><span>Crypto</span><span>Forensics</span></div><div class="project-status live"><i class="fas fa-circle" style="font-size: 0.5rem;"></i> Active</div></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- BLOG -->
+    <section id="blog">
+        <div class="section-container">
+            <div class="section-header animate-on-scroll">
+                <p class="section-label">0x05 // WRITEUPS</p>
+                <h2 class="section-title">Research &amp; Articles</h2>
+                <div class="section-divider"></div>
+            </div>
+            <div class="blog-list">
+                {% for post in site.posts %}
+                <a class="blog-item animate-on-scroll" href="{{ post.url | relative_url }}">
+                    <div class="blog-meta">
+                        {% for tag in post.tags %}<span class="blog-tag">{{ tag }}</span>{% endfor %}
+                        <span class="blog-date">{{ post.date | date: "%b %d, %Y" }}</span>
+                    </div>
+                    <h3 class="blog-title">{{ post.title }}</h3>
+                    <p class="blog-excerpt">{{ post.excerpt | strip_html | strip_newlines | truncate: 160 }}</p>
+                </a>
+                {% else %}
+                <p class="blog-excerpt">No writeups published yet — add a file to <code>_posts/</code> to publish the first one.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <div class="hex-line">── OFFENSIVE RESEARCH NEVER STOPS ──</div>
+
+    <!-- CONTACT -->
+    <section id="contact">
+        <div class="section-container">
+            <div class="section-header animate-on-scroll" style="text-align: center;">
+                <p class="section-label" style="justify-content: center;">0x06 // CONTACT</p>
+                <h2 class="section-title">Get in Touch</h2>
+                <div class="section-divider" style="margin: 1rem auto 0;"></div>
+            </div>
+            <div class="contact-content animate-on-scroll">
+                <p class="contact-text">Interested in collaboration, security engagements, or just want to talk about hacking? The dragon is always listening. Reach out through any of the channels below.</p>
+                <div class="contact-links">
+                    <a href="mailto:mohamedhaythamm106@gmail.com" class="contact-btn"><i class="fas fa-envelope"></i> Email Me</a>
+                    <a href="https://github.com/0xdragon10" target="_blank" rel="noopener" class="contact-btn"><i class="fab fa-github"></i> GitHub</a>
+                    <a href="https://x.com/0xdragon1x" target="_blank" rel="noopener" class="contact-btn"><i class="fab fa-x-twitter"></i> Twitter/X</a>
+                    <a href="https://www.linkedin.com/in/0xdragon/" target="_blank" rel="noopener" class="contact-btn"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<script>
+    // ═══════════════ RESEARCH TERMINAL (home page only) ═══════════════
+    // Idle until scrolled into view, types character-by-character with a
+    // blinking cursor, then pauses (simulating Enter) before output appears.
+    const researchTerminal = document.getElementById('research-terminal');
+    const terminalSequence = [
+        ['cmd','./exploit --target self'],
+        ['out','[+] loading identity module...'],
+        ['out','name     : Mohamed Haytham'],
+        ['out','alias    : 0xdragon'],
+        ['out','role     : Offensive Security Researcher, Synack Red Team'],
+        ['out','focus    : Binary Exploitation, Reverse Engineering, Red Teaming'],
+        ['out','[+] exploit executed successfully']
+    ];
+
+    function runTerminal() {
+        if (!researchTerminal || researchTerminal.dataset.ran) return;
+        researchTerminal.dataset.ran = '1';
+        researchTerminal.innerHTML = '';
+        let ti = 0;
+
+        function nextLine() {
+            const [kind, text] = terminalSequence[ti];
+            const line = document.createElement('div');
+            line.className = 'terminal-line';
+            const prefix = kind === 'cmd' ? '<span class="terminal-prompt">0xdragon@exploit:~$</span> ' : '';
+            const cls = kind === 'cmd' ? 'terminal-cmd' : (text.startsWith('[+]') ? 'terminal-ok' : 'terminal-info');
+            line.innerHTML = prefix + '<span class="' + cls + '"></span><span class="typing-cursor"></span>';
+            researchTerminal.appendChild(line);
+            const out = line.querySelector('.' + cls);
+            const cursorEl = line.querySelector('.typing-cursor');
+            let i = 0;
+
+            function type() {
+                if (i < text.length) {
+                    out.textContent += text[i++];
+                    researchTerminal.scrollTop = researchTerminal.scrollHeight;
+                    const delay = kind === 'cmd' ? (28 + Math.random() * 40) : 9;
+                    setTimeout(type, delay);
+                    return;
+                }
+                if (kind === 'out') {
+                    const m = text.match(/^([a-zA-Z]+\s*):\s(.+)$/);
+                    if (m) {
+                        out.innerHTML = '<span class="terminal-key">' + m[1] + '</span><span class="terminal-colon">:</span> <span class="terminal-value">' + m[2] + '</span>';
+                    }
+                }
+                if (kind === 'cmd') {
+                    setTimeout(() => {
+                        cursorEl.remove();
+                        ti++;
+                        if (ti < terminalSequence.length) setTimeout(nextLine, 300);
+                        else finish();
+                    }, 650);
+                } else {
+                    cursorEl.remove();
+                    ti++;
+                    if (ti < terminalSequence.length) setTimeout(nextLine, 180);
+                    else finish();
+                }
+            }
+            type();
+        }
+
+        function finish() {
+            const r = document.createElement('div');
+            r.className = 'terminal-line terminal-running';
+            r.innerHTML = '<span class="terminal-ok">[●]</span> process running — monitoring research state <span class="terminal-cursor"></span>';
+            researchTerminal.appendChild(r);
+        }
+
+        nextLine();
+    }
+
+    if (researchTerminal && 'IntersectionObserver' in window) {
+        const termObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    runTerminal();
+                    termObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.35 });
+        termObserver.observe(researchTerminal);
+    } else if (researchTerminal) {
+        runTerminal();
+    }
+
+    // ═══════════════ COPY CREDENTIAL (home page only) ═══════════════
+    const copyCpts = document.getElementById('copy-cpts');
+    if (copyCpts) {
+        copyCpts.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText('HTBCERT-0D53BE15CE');
+                copyCpts.innerHTML = '<i class="fas fa-check"></i> COPIED';
+            } catch(e) { copyCpts.textContent = 'SELECT ID'; }
+            setTimeout(() => { copyCpts.innerHTML = '<i class="fas fa-copy"></i> COPY'; }, 1400);
+        });
+    }
+</script>
